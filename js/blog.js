@@ -49,4 +49,57 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-document.addEventListener('DOMContentLoaded', loadPosts);
+async function loadBlogSettings() {
+    initSupabase();
+    
+    try {
+        // まずlocalStorageから読み込む（高速化のため）
+        const cachedSettings = localStorage.getItem('blog_settings');
+        if (cachedSettings) {
+            applySettings(JSON.parse(cachedSettings));
+        }
+        
+        // Supabaseから最新の設定を取得
+        const { data: settings, error } = await supabaseClient
+            .from('blog_settings')
+            .select('*')
+            .single();
+        
+        if (error && error.code !== 'PGRST116') {
+            throw error;
+        }
+        
+        if (settings) {
+            applySettings(settings);
+            // localStorageを更新
+            localStorage.setItem('blog_settings', JSON.stringify(settings));
+        }
+        
+    } catch (error) {
+        console.error('Error loading blog settings:', error);
+    }
+}
+
+function applySettings(settings) {
+    if (settings.blog_title) {
+        document.querySelector('.blog-title').textContent = settings.blog_title;
+        document.title = settings.blog_title;
+    }
+    
+    if (settings.profile_bio) {
+        document.querySelector('.profile-bio').innerHTML = settings.profile_bio.replace(/\n/g, '<br>');
+    }
+    
+    if (settings.profile_image) {
+        const profileImg = document.querySelector('.profile-image');
+        profileImg.src = settings.profile_image;
+        profileImg.onerror = function() {
+            this.src = 'https://via.placeholder.com/150';
+        };
+    }
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    await loadBlogSettings();
+    await loadPosts();
+});

@@ -293,6 +293,28 @@ button:disabled {
     border: 1px solid #f5c6cb;
 }
 
+/* 設定ページのスタイル */
+.settings-preview {
+    text-align: center;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+.preview-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 4px solid #34495e;
+}
+
+.form-group small {
+    display: block;
+    margin-top: 0.25rem;
+    color: #666;
+    font-size: 0.875rem;
+}
+
 /* レスポンシブデザイン */
 @media (max-width: 768px) {
     .sidebar {

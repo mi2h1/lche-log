@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ブログ設定 - My Blog</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <h1>ブログ設定</h1>
+        <nav>
+            <a href="index.html">ホーム</a>
+            <a href="admin.html">新規投稿</a>
+            <a href="settings.html">設定</a>
+        </nav>
+    </header>
+    
+    <main>
+        <div class="admin-container">
+            <h2>ブログ設定の編集</h2>
+            <form id="settings-form">
+                <div class="form-group">
+                    <label for="blog-title">ブログタイトル</label>
+                    <input type="text" id="blog-title" placeholder="My Blog" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="profile-bio">プロフィール</label>
+                    <textarea id="profile-bio" rows="5" placeholder="自己紹介文を入力してください" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="profile-image">プロフィール画像URL</label>
+                    <input type="url" id="profile-image" placeholder="https://example.com/image.jpg">
+                    <small>※ 画像のURLを入力してください</small>
+                </div>
+                
+                <div class="form-group">
+                    <label>プレビュー</label>
+                    <div class="settings-preview">
+                        <img id="image-preview" src="https://via.placeholder.com/150" alt="Profile preview" class="preview-image">
+                    </div>
+                </div>
+                
+                <button type="submit">設定を保存</button>
+            </form>
+            
+            <div id="message"></div>
+        </div>
+    </main>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/config.js"></script>
+    <script src="js/settings.js"></script>
+</body>
+</html>

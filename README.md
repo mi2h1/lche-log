@@ -10,11 +10,22 @@
 2. 以下のSQLを実行してpostsテーブルを作成：
 
 ```sql
+-- 記事テーブル
 CREATE TABLE posts (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   title TEXT NOT NULL,
   content TEXT NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- ブログ設定テーブル
+CREATE TABLE blog_settings (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  blog_title TEXT,
+  profile_bio TEXT,
+  profile_image TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 ```
 
@@ -37,9 +48,9 @@ CREATE TABLE posts (
 
 ## 使い方
 
-- **ホームページ** (`index.html`): ブログ記事の一覧を表示
-- **管理画面** (`admin.html`): 新しい記事を投稿（Markdownエディタ付き）
-- **記事詳細** (`post.html`): 個別の記事を表示
+- **ホームページ** (`index.html`): ブログ記事を全文表示（サイドバー付き）
+- **新規投稿** (`admin.html`): 新しい記事を投稿（Markdownエディタ付き）
+- **ブログ設定** (`settings.html`): ブログタイトル、プロフィール、アイコンを編集
 
 ## 機能
 
