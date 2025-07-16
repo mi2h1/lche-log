@@ -4,7 +4,27 @@ async function initializeSettings() {
     initSupabase();
     
     // 画像URLの変更を監視してプレビューを更新
-    document.getElementById('profile-image').addEventListener('input', updateImagePreview);
+    document.getElementById('profile-image').addEventListener('input', updatePreview);
+    
+    // タイトルとプロフィールの変更を監視
+    document.getElementById('blog-title').addEventListener('input', updatePreview);
+    document.getElementById('profile-bio').addEventListener('input', updatePreview);
+    
+    // カラーピッカーとテキスト入力の同期
+    const colorPicker = document.getElementById('sidebar-color');
+    const colorText = document.getElementById('sidebar-color-text');
+    
+    colorPicker.addEventListener('input', (e) => {
+        colorText.value = e.target.value;
+        updatePreview();
+    });
+    
+    colorText.addEventListener('input', (e) => {
+        if (/^#[0-9A-F]{6}$/i.test(e.target.value)) {
+            colorPicker.value = e.target.value;
+            updatePreview();
+        }
+    });
     
     // フォームの送信イベント
     document.getElementById('settings-form').addEventListener('submit', handleSubmit);
@@ -28,7 +48,13 @@ async function loadSettings() {
             document.getElementById('blog-title').value = settings.blog_title || '';
             document.getElementById('profile-bio').value = settings.profile_bio || '';
             document.getElementById('profile-image').value = settings.profile_image || '';
-            updateImagePreview();
+            
+            if (settings.sidebar_color) {
+                document.getElementById('sidebar-color').value = settings.sidebar_color;
+                document.getElementById('sidebar-color-text').value = settings.sidebar_color;
+            }
+            
+            updatePreview();
         }
         
     } catch (error) {
@@ -43,6 +69,7 @@ async function handleSubmit(e) {
     const blogTitle = document.getElementById('blog-title').value;
     const profileBio = document.getElementById('profile-bio').value;
     const profileImage = document.getElementById('profile-image').value;
+    const sidebarColor = document.getElementById('sidebar-color').value;
     const submitButton = e.target.querySelector('button[type="submit"]');
     
     submitButton.disabled = true;
@@ -64,6 +91,7 @@ async function handleSubmit(e) {
                     blog_title: blogTitle,
                     profile_bio: profileBio,
                     profile_image: profileImage,
+                    sidebar_color: sidebarColor,
                     updated_at: new Date().toISOString()
                 })
                 .eq('id', existingSettings.id);
@@ -74,7 +102,8 @@ async function handleSubmit(e) {
                 .insert([{
                     blog_title: blogTitle,
                     profile_bio: profileBio,
-                    profile_image: profileImage
+                    profile_image: profileImage,
+                    sidebar_color: sidebarColor
                 }]);
         }
         
@@ -86,7 +115,8 @@ async function handleSubmit(e) {
         localStorage.setItem('blog_settings', JSON.stringify({
             blog_title: blogTitle,
             profile_bio: profileBio,
-            profile_image: profileImage
+            profile_image: profileImage,
+            sidebar_color: sidebarColor
         }));
         
     } catch (error) {
@@ -98,7 +128,8 @@ async function handleSubmit(e) {
     }
 }
 
-function updateImagePreview() {
+function updatePreview() {
+    // 画像プレビュー
     const imageUrl = document.getElementById('profile-image').value;
     const preview = document.getElementById('image-preview');
     
@@ -110,6 +141,32 @@ function updateImagePreview() {
     } else {
         preview.src = 'https://via.placeholder.com/150';
     }
+    
+    // タイトルとプロフィールのプレビュー
+    const title = document.getElementById('blog-title').value || 'My Blog';
+    const bio = document.getElementById('profile-bio').value || 'プロフィール';
+    document.getElementById('title-preview').textContent = title;
+    document.getElementById('bio-preview').textContent = bio;
+    
+    // サイドバーの色プレビュー
+    const sidebarColor = document.getElementById('sidebar-color').value;
+    const sidebarPreview = document.getElementById('sidebar-preview');
+    sidebarPreview.style.backgroundColor = sidebarColor;
+    
+    // 背景色の明度を計算して文字色を自動調整
+    const rgb = hexToRgb(sidebarColor);
+    const brightness = (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000;
+    const textColor = brightness > 128 ? '#333333' : '#ffffff';
+    sidebarPreview.style.color = textColor;
+}
+
+function hexToRgb(hex) {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+    } : null;
 }
 
 function showMessage(message, type) {

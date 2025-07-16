@@ -27,6 +27,9 @@ body {
     height: 100vh;
     overflow-y: auto;
     box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    --link-color: white;
+    --link-hover-bg: rgba(255, 255, 255, 0.1);
+    --profile-border: rgba(255, 255, 255, 0.2);
 }
 
 .sidebar-content {
@@ -43,13 +46,13 @@ body {
     height: 150px;
     border-radius: 50%;
     margin-bottom: 1rem;
-    border: 4px solid #34495e;
+    border: 4px solid var(--profile-border, #34495e);
 }
 
 .blog-title {
     font-size: 1.8rem;
     margin-bottom: 1rem;
-    color: white;
+    color: inherit;
 }
 
 .profile-bio {
@@ -64,7 +67,7 @@ body {
 
 .nav-link {
     display: block;
-    color: white;
+    color: var(--link-color, white);
     text-decoration: none;
     padding: 0.75rem 1rem;
     margin-bottom: 0.5rem;
@@ -74,7 +77,7 @@ body {
 
 .nav-link:hover,
 .nav-link.active {
-    background-color: #34495e;
+    background-color: var(--link-hover-bg, rgba(255, 255, 255, 0.1));
 }
 
 /* メインコンテンツ */
@@ -313,6 +316,45 @@ button:disabled {
     margin-top: 0.25rem;
     color: #666;
     font-size: 0.875rem;
+}
+
+/* カラー入力グループ */
+.color-input-group {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.color-input-group input[type="color"] {
+    width: 60px;
+    height: 40px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.color-input-group input[type="text"] {
+    flex: 1;
+    max-width: 150px;
+}
+
+/* サイドバープレビュー */
+.sidebar-preview {
+    background-color: #2c3e50;
+    color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.sidebar-preview h3 {
+    margin: 1rem 0 0.5rem;
+    font-size: 1.3rem;
+}
+
+.sidebar-preview p {
+    font-size: 0.9rem;
+    opacity: 0.9;
 }
 
 /* レスポンシブデザイン */

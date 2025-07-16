@@ -97,6 +97,38 @@ function applySettings(settings) {
             this.src = 'https://via.placeholder.com/150';
         };
     }
+    
+    if (settings.sidebar_color) {
+        const sidebar = document.querySelector('.sidebar');
+        sidebar.style.backgroundColor = settings.sidebar_color;
+        
+        // 背景色の明度を計算して文字色とリンクのスタイルを自動調整
+        const rgb = hexToRgb(settings.sidebar_color);
+        const brightness = (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000;
+        
+        if (brightness > 128) {
+            // 明るい背景色の場合
+            sidebar.style.color = '#333333';
+            sidebar.style.setProperty('--link-color', '#333333');
+            sidebar.style.setProperty('--link-hover-bg', 'rgba(0, 0, 0, 0.1)');
+            sidebar.style.setProperty('--profile-border', 'rgba(0, 0, 0, 0.2)');
+        } else {
+            // 暗い背景色の場合
+            sidebar.style.color = '#ffffff';
+            sidebar.style.setProperty('--link-color', '#ffffff');
+            sidebar.style.setProperty('--link-hover-bg', 'rgba(255, 255, 255, 0.1)');
+            sidebar.style.setProperty('--profile-border', 'rgba(255, 255, 255, 0.2)');
+        }
+    }
+}
+
+function hexToRgb(hex) {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+    } : null;
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
