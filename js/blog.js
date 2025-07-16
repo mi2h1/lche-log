@@ -139,7 +139,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 function checkLoginStatus() {
     const isLoggedIn = checkLogin();
-    const adminLinks = document.querySelectorAll('.nav-link[href="admin.html"], .nav-link[href="settings.html"]');
+    const adminLinks = document.querySelectorAll('.nav-link[href="admin.html"], .nav-link[href="post.html"], .nav-link[href="settings.html"]');
     
     if (!isLoggedIn) {
         // 未ログインの場合は管理系のリンクを非表示
