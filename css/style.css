@@ -16,8 +16,6 @@ body {
 .layout-container {
     display: flex;
     min-height: 100vh;
-    max-width: 1400px;
-    margin: 0 auto;
 }
 
 /* サイドバー */
@@ -32,8 +30,8 @@ body {
     --link-color: white;
     --link-hover-bg: rgba(255, 255, 255, 0.1);
     --profile-border: rgba(255, 255, 255, 0.2);
-    left: 50%;
-    transform: translateX(-700px);
+    left: 0;
+    top: 0;
 }
 
 .sidebar-content {
@@ -86,11 +84,12 @@ body {
 
 /* メインコンテンツ */
 .main-content {
-    margin-left: 400px;
+    margin-left: 300px;
     flex: 1;
     padding: 2rem 3rem;
     max-width: 800px;
     width: 100%;
+    margin-right: auto;
 }
 
 #loading {
@@ -398,17 +397,3 @@ button:disabled {
     }
 }
 
-/* 大画面対応 */
-@media (min-width: 1600px) {
-    .layout-container {
-        max-width: 1600px;
-    }
-    
-    .sidebar {
-        transform: translateX(-800px);
-    }
-    
-    .main-content {
-        max-width: 900px;
-    }
-}

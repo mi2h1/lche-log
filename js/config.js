@@ -12,10 +12,17 @@ function initSupabase() {
 function formatDate(dateString) {
     const date = new Date(dateString);
     // JSTで表示 (yyyy/mm/dd形式)
-    const year = date.toLocaleDateString('ja-JP', { year: 'numeric', timeZone: 'Asia/Tokyo' });
-    const month = date.toLocaleDateString('ja-JP', { month: '2-digit', timeZone: 'Asia/Tokyo' });
-    const day = date.toLocaleDateString('ja-JP', { day: '2-digit', timeZone: 'Asia/Tokyo' });
-    return `${year}/${month}/${day}`;
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    
+    // JSTに変換
+    const jstDate = new Date(date.toLocaleString('en-US', { timeZone: 'Asia/Tokyo' }));
+    const jstYear = jstDate.getFullYear();
+    const jstMonth = String(jstDate.getMonth() + 1).padStart(2, '0');
+    const jstDay = String(jstDate.getDate()).padStart(2, '0');
+    
+    return `${jstYear}/${jstMonth}/${jstDay}`;
 }
 
 // 現在時刻をJSTで取得する関数
