@@ -21,10 +21,17 @@ async function loadPosts() {
         posts.forEach(post => {
             const postCard = document.createElement('div');
             postCard.className = 'post-card';
+            
+            // Markdownをパース
+            const htmlContent = marked.parse(post.content);
+            
             postCard.innerHTML = `
-                <h2><a href="post.html?id=${post.id}">${escapeHtml(post.title)}</a></h2>
+                <h2>${escapeHtml(post.title)}</h2>
                 <div class="post-meta">
                     投稿日: ${formatDate(post.created_at)}
+                </div>
+                <div class="post-content">
+                    ${htmlContent}
                 </div>
             `;
             postsContainer.appendChild(postCard);

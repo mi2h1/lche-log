@@ -7,20 +7,32 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <header>
-        <h1>My Blog</h1>
-        <nav>
-            <a href="index.html">ホーム</a>
-            <a href="admin.html">管理画面</a>
-        </nav>
-    </header>
-    
-    <main>
-        <div id="loading">読み込み中...</div>
-        <div id="posts-container"></div>
-    </main>
+    <div class="layout-container">
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="profile-section">
+                    <img src="https://via.placeholder.com/150" alt="Profile" class="profile-image">
+                    <h1 class="blog-title">My Blog</h1>
+                    <p class="profile-bio">
+                        ここにプロフィールを書きます。<br>
+                        趣味や興味のあることなど。
+                    </p>
+                </div>
+                <nav class="sidebar-nav">
+                    <a href="index.html" class="nav-link active">ホーム</a>
+                    <a href="admin.html" class="nav-link">管理画面</a>
+                </nav>
+            </div>
+        </aside>
+        
+        <main class="main-content">
+            <div id="loading">読み込み中...</div>
+            <div id="posts-container"></div>
+        </main>
+    </div>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="js/config.js"></script>
     <script src="js/blog.js"></script>
 </body>
