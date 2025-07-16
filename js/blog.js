@@ -1,3 +1,10 @@
+// Marked.jsの設定
+marked.setOptions({
+    breaks: true,  // 改行を<br>に変換
+    gfm: true,     // GitHub Flavored Markdown
+    sanitize: false // HTMLを許可（XSS対策は別途必要）
+});
+
 async function loadPosts() {
     initSupabase();
     const loadingEl = document.getElementById('loading');

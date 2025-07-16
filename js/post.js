@@ -3,6 +3,15 @@ const postsPerPage = 10;
 let allPosts = [];
 let editingSimplemde;
 
+// Marked.jsの設定（プレビュー用）
+if (typeof marked !== 'undefined') {
+    marked.setOptions({
+        breaks: true,  // 改行を<br>に変換
+        gfm: true,     // GitHub Flavored Markdown
+        sanitize: false // HTMLを許可
+    });
+}
+
 document.addEventListener('DOMContentLoaded', initializePostManagement);
 
 async function initializePostManagement() {
@@ -209,7 +218,20 @@ async function editPost(postId) {
         element: document.getElementById('edit-content'),
         spellChecker: false,
         placeholder: 'Markdownで記事を書いてください...',
-        initialValue: post.content
+        initialValue: post.content,
+        renderingConfig: {
+            singleLineBreaks: true,  // 単一改行を<br>として扱う
+            codeSyntaxHighlighting: true
+        },
+        previewRender: function(plainText) {
+            // プレビュー時もmarkedの設定を適用
+            marked.setOptions({
+                breaks: true,
+                gfm: true,
+                sanitize: false
+            });
+            return marked.parse(plainText);
+        }
     });
 }
 

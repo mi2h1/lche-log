@@ -1,5 +1,14 @@
 let simplemde;
 
+// Marked.jsの設定（プレビュー用）
+if (typeof marked !== 'undefined') {
+    marked.setOptions({
+        breaks: true,  // 改行を<br>に変換
+        gfm: true,     // GitHub Flavored Markdown
+        sanitize: false // HTMLを許可
+    });
+}
+
 document.addEventListener('DOMContentLoaded', initializeAdmin);
 
 function initializeAdmin() {
@@ -19,6 +28,19 @@ function initializeAdmin() {
             enabled: true,
             uniqueId: 'blog-post-draft',
             delay: 1000,
+        },
+        renderingConfig: {
+            singleLineBreaks: true,  // 単一改行を<br>として扱う
+            codeSyntaxHighlighting: true
+        },
+        previewRender: function(plainText) {
+            // プレビュー時もmarkedの設定を適用
+            marked.setOptions({
+                breaks: true,
+                gfm: true,
+                sanitize: false
+            });
+            return marked.parse(plainText);
         }
     });
     
