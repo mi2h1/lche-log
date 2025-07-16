@@ -41,9 +41,4 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    const script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
-    script.onload = loadPosts;
-    document.head.appendChild(script);
-});
+document.addEventListener('DOMContentLoaded', loadPosts);

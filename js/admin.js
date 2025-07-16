@@ -1,11 +1,6 @@
 let simplemde;
 
-document.addEventListener('DOMContentLoaded', () => {
-    const script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
-    script.onload = initializeAdmin;
-    document.head.appendChild(script);
-});
+document.addEventListener('DOMContentLoaded', initializeAdmin);
 
 function initializeAdmin() {
     simplemde = new SimpleMDE({
