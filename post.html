@@ -107,6 +107,30 @@
             background-color: #da190b;
         }
         
+        /* ステータスバッジ */
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .status-published {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        .status-draft {
+            background-color: #FF9800;
+            color: white;
+        }
+        
+        .status-private {
+            background-color: #9E9E9E;
+            color: white;
+        }
+        
         /* ページネーション */
         .pagination {
             display: flex;
@@ -226,9 +250,10 @@
                 <table id="post-list-table" class="post-list-table" style="display: none;">
                     <thead>
                         <tr>
-                            <th style="width: 60%;">タイトル</th>
+                            <th style="width: 50%;">タイトル</th>
+                            <th style="width: 15%;">ステータス</th>
                             <th style="width: 20%;">投稿日</th>
-                            <th style="width: 20%;">操作</th>
+                            <th style="width: 15%;">操作</th>
                         </tr>
                     </thead>
                     <tbody id="post-list-body">
@@ -264,10 +289,16 @@
                         <textarea id="edit-content"></textarea>
                     </div>
                     
-                    <div style="display: flex; gap: 1rem;">
-                        <button type="submit">更新する</button>
-                        <button type="button" class="btn-delete" onclick="deletePost()">この記事を削除</button>
+                    <div class="form-group">
+                        <label for="edit-status">ステータス</label>
+                        <select id="edit-status" style="width: 200px; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                            <option value="published">公開中</option>
+                            <option value="draft">下書き</option>
+                            <option value="private">非公開</option>
+                        </select>
                     </div>
+                    
+                    <button type="submit">更新する</button>
                 </form>
                 
                 <div id="message"></div>

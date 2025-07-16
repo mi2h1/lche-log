@@ -73,13 +73,16 @@ function displayPosts() {
     // 記事を表示
     currentPosts.forEach(post => {
         const row = document.createElement('tr');
+        const statusText = getStatusText(post.status || 'published');
+        const statusClass = `status-${post.status || 'published'}`;
+        
         row.innerHTML = `
             <td class="post-title-cell" onclick="editPost('${post.id}')">${escapeHtml(post.title)}</td>
+            <td><span class="status-badge ${statusClass}">${statusText}</span></td>
             <td class="post-date-cell">${formatDate(post.created_at)}</td>
             <td>
                 <div class="post-actions">
                     <button class="btn-edit" onclick="editPost('${post.id}')">編集</button>
-                    <button class="btn-delete" onclick="confirmDelete('${post.id}', '${escapeHtml(post.title).replace(/'/g, "\\'")}')">削除</button>
                 </div>
             </td>
         `;
@@ -194,6 +197,7 @@ async function editPost(postId) {
     // フォームに値をセット
     document.getElementById('edit-post-id').value = post.id;
     document.getElementById('edit-title').value = post.title;
+    document.getElementById('edit-status').value = post.status || 'published';
     
     // SimpleMDEエディタを初期化
     if (editingSimplemde) {
@@ -225,6 +229,7 @@ async function handleUpdate(e) {
     const postId = document.getElementById('edit-post-id').value;
     const title = document.getElementById('edit-title').value;
     const content = editingSimplemde.value();
+    const status = document.getElementById('edit-status').value;
     const submitButton = e.target.querySelector('button[type="submit"]');
     
     if (!title || !content) {
@@ -240,7 +245,8 @@ async function handleUpdate(e) {
             .from('posts')
             .update({
                 title: title,
-                content: content
+                content: content,
+                status: status
             })
             .eq('id', postId);
         
@@ -265,39 +271,16 @@ async function handleUpdate(e) {
     }
 }
 
-function confirmDelete(postId, postTitle) {
-    if (confirm(`「${postTitle}」を削除しますか？\nこの操作は取り消せません。`)) {
-        deletePostById(postId);
-    }
-}
-
-async function deletePost() {
-    const postId = document.getElementById('edit-post-id').value;
-    const post = allPosts.find(p => p.id === postId);
-    
-    if (confirm(`「${post.title}」を削除しますか？\nこの操作は取り消せません。`)) {
-        await deletePostById(postId);
-        showPostList();
-    }
-}
-
-async function deletePostById(postId) {
-    try {
-        const { error } = await supabaseClient
-            .from('posts')
-            .delete()
-            .eq('id', postId);
-        
-        if (error) throw error;
-        
-        showMessage('記事を削除しました。', 'success');
-        
-        // リストを更新
-        await loadPosts();
-        
-    } catch (error) {
-        console.error('Error deleting post:', error);
-        showMessage('削除に失敗しました。', 'error');
+function getStatusText(status) {
+    switch (status) {
+        case 'published':
+            return '公開中';
+        case 'draft':
+            return '下書き';
+        case 'private':
+            return '非公開';
+        default:
+            return '公開中';
     }
 }
 

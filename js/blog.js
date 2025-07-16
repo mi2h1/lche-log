@@ -7,6 +7,7 @@ async function loadPosts() {
         const { data: posts, error } = await supabaseClient
             .from('posts')
             .select('*')
+            .eq('status', 'published')
             .order('created_at', { ascending: false });
         
         if (error) throw error;

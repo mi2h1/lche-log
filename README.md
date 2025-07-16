@@ -15,8 +15,12 @@ CREATE TABLE posts (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   title TEXT NOT NULL,
   content TEXT NOT NULL,
+  status TEXT DEFAULT 'published' CHECK (status IN ('draft', 'published', 'private')),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+
+-- 既存のpostsテーブルにstatusカラムを追加する場合
+-- ALTER TABLE posts ADD COLUMN status TEXT DEFAULT 'published' CHECK (status IN ('draft', 'published', 'private'));
 
 -- ブログ設定テーブル
 CREATE TABLE blog_settings (

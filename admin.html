@@ -32,7 +32,10 @@
                     <textarea id="content"></textarea>
                 </div>
                 
-                <button type="submit">投稿する</button>
+                <div style="display: flex; gap: 1rem;">
+                    <button type="submit" id="publish-btn" data-status="published">公開する</button>
+                    <button type="submit" id="draft-btn" data-status="draft" style="background-color: #666;">下書き保存</button>
+                </div>
             </form>
             
             <div id="message"></div>

@@ -23,6 +23,14 @@ function initializeAdmin() {
     });
     
     document.getElementById('post-form').addEventListener('submit', handleSubmit);
+    
+    // 公開・下書きボタンのクリックイベント
+    document.getElementById('publish-btn').addEventListener('click', (e) => {
+        e.currentTarget.dataset.clicked = 'true';
+    });
+    document.getElementById('draft-btn').addEventListener('click', (e) => {
+        e.currentTarget.dataset.clicked = 'true';
+    });
 }
 
 async function handleSubmit(e) {
@@ -30,16 +38,33 @@ async function handleSubmit(e) {
     
     const title = document.getElementById('title').value;
     const content = simplemde.value();
-    const submitButton = e.target.querySelector('button[type="submit"]');
     const messageEl = document.getElementById('message');
+    
+    // どのボタンがクリックされたか判定
+    const publishBtn = document.getElementById('publish-btn');
+    const draftBtn = document.getElementById('draft-btn');
+    let status = 'published';
+    let clickedButton = publishBtn;
+    
+    if (draftBtn.dataset.clicked === 'true') {
+        status = 'draft';
+        clickedButton = draftBtn;
+    }
+    
+    // クリック状態をリセット
+    publishBtn.dataset.clicked = 'false';
+    draftBtn.dataset.clicked = 'false';
     
     if (!title || !content) {
         showMessage('タイトルと内容を入力してください。', 'error');
         return;
     }
     
-    submitButton.disabled = true;
-    submitButton.textContent = '投稿中...';
+    const originalText = clickedButton.textContent;
+    clickedButton.disabled = true;
+    publishBtn.disabled = true;
+    draftBtn.disabled = true;
+    clickedButton.textContent = status === 'draft' ? '保存中...' : '投稿中...';
     
     try {
         const { data, error } = await supabaseClient
@@ -48,29 +73,33 @@ async function handleSubmit(e) {
                 {
                     title: title,
                     content: content,
-                    created_at: new Date().toISOString() // Supabaseは自動的にUTCで保存するのでISOStringのまま
+                    status: status,
+                    created_at: new Date().toISOString()
                 }
             ])
             .select();
         
         if (error) throw error;
         
-        showMessage('投稿が完了しました！', 'success');
+        const message = status === 'draft' ? '下書きを保存しました！' : '記事を公開しました！';
+        showMessage(message, 'success');
         
         document.getElementById('title').value = '';
         simplemde.value('');
         simplemde.clearAutosavedValue();
         
         setTimeout(() => {
-            window.location.href = 'index.html';
+            window.location.href = status === 'draft' ? 'post.html' : 'index.html';
         }, 1500);
         
     } catch (error) {
         console.error('Error creating post:', error);
         showMessage('投稿に失敗しました。もう一度お試しください。', 'error');
     } finally {
-        submitButton.disabled = false;
-        submitButton.textContent = '投稿する';
+        clickedButton.disabled = false;
+        publishBtn.disabled = false;
+        draftBtn.disabled = false;
+        clickedButton.textContent = originalText;
     }
 }
 
