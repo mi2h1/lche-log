@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理画面 - My Blog</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+</head>
+<body>
+    <header>
+        <h1>管理画面</h1>
+        <nav>
+            <a href="index.html">ホーム</a>
+            <a href="admin.html">管理画面</a>
+        </nav>
+    </header>
+    
+    <main>
+        <div class="admin-container">
+            <h2>新規投稿</h2>
+            <form id="post-form">
+                <div class="form-group">
+                    <label for="title">タイトル</label>
+                    <input type="text" id="title" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="content">内容（Markdown対応）</label>
+                    <textarea id="content" required></textarea>
+                </div>
+                
+                <button type="submit">投稿する</button>
+            </form>
+            
+            <div id="message"></div>
+        </div>
+    </main>
+    
+    <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>
