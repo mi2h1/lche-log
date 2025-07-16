@@ -98,12 +98,12 @@ function applySettings(settings) {
         };
     }
     
-    if (settings.sidebar_color) {
+    if (settings.color_primary) {
         const sidebar = document.querySelector('.sidebar');
-        sidebar.style.backgroundColor = settings.sidebar_color;
+        sidebar.style.backgroundColor = settings.color_primary;
         
         // 背景色の明度を計算して文字色とリンクのスタイルを自動調整
-        const rgb = hexToRgb(settings.sidebar_color);
+        const rgb = hexToRgb(settings.color_primary);
         const brightness = (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000;
         
         if (brightness > 128) {

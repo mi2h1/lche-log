@@ -24,7 +24,7 @@ CREATE TABLE blog_settings (
   blog_title TEXT,
   profile_bio TEXT,
   profile_image TEXT,
-  sidebar_color TEXT DEFAULT '#2c3e50',
+  color_primary TEXT DEFAULT '#2c3e50',
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );

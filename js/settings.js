@@ -49,9 +49,9 @@ async function loadSettings() {
             document.getElementById('profile-bio').value = settings.profile_bio || '';
             document.getElementById('profile-image').value = settings.profile_image || '';
             
-            if (settings.sidebar_color) {
-                document.getElementById('sidebar-color').value = settings.sidebar_color;
-                document.getElementById('sidebar-color-text').value = settings.sidebar_color;
+            if (settings.color_primary) {
+                document.getElementById('sidebar-color').value = settings.color_primary;
+                document.getElementById('sidebar-color-text').value = settings.color_primary;
             }
             
             updatePreview();
@@ -69,7 +69,7 @@ async function handleSubmit(e) {
     const blogTitle = document.getElementById('blog-title').value;
     const profileBio = document.getElementById('profile-bio').value;
     const profileImage = document.getElementById('profile-image').value;
-    const sidebarColor = document.getElementById('sidebar-color').value;
+    const colorPrimary = document.getElementById('sidebar-color').value;
     const submitButton = e.target.querySelector('button[type="submit"]');
     
     submitButton.disabled = true;
@@ -91,7 +91,7 @@ async function handleSubmit(e) {
                     blog_title: blogTitle,
                     profile_bio: profileBio,
                     profile_image: profileImage,
-                    sidebar_color: sidebarColor,
+                    color_primary: colorPrimary,
                     updated_at: new Date().toISOString()
                 })
                 .eq('id', existingSettings.id);
@@ -103,7 +103,7 @@ async function handleSubmit(e) {
                     blog_title: blogTitle,
                     profile_bio: profileBio,
                     profile_image: profileImage,
-                    sidebar_color: sidebarColor
+                    color_primary: colorPrimary
                 }]);
         }
         
@@ -116,7 +116,7 @@ async function handleSubmit(e) {
             blog_title: blogTitle,
             profile_bio: profileBio,
             profile_image: profileImage,
-            sidebar_color: sidebarColor
+            color_primary: colorPrimary
         }));
         
     } catch (error) {
