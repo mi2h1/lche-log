@@ -1,4 +1,5 @@
 async function loadPosts() {
+    initSupabase();
     const loadingEl = document.getElementById('loading');
     const postsContainer = document.getElementById('posts-container');
     

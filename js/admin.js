@@ -3,6 +3,7 @@ let simplemde;
 document.addEventListener('DOMContentLoaded', initializeAdmin);
 
 function initializeAdmin() {
+    initSupabase();
     simplemde = new SimpleMDE({
         element: document.getElementById('content'),
         spellChecker: false,
