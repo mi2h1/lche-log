@@ -35,11 +35,11 @@ async function loadPosts() {
             
             postCard.innerHTML = `
                 <h2>${escapeHtml(post.title)}</h2>
-                <div class="post-meta">
-                    投稿日: ${formatDate(post.created_at)}
-                </div>
                 <div class="post-content">
                     ${htmlContent}
+                </div>
+                <div class="post-meta">
+                    ${formatDate(post.created_at)}
                 </div>
             `;
             postsContainer.appendChild(postCard);

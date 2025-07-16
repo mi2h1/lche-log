@@ -16,6 +16,8 @@ body {
 .layout-container {
     display: flex;
     min-height: 100vh;
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
 /* サイドバー */
@@ -30,6 +32,8 @@ body {
     --link-color: white;
     --link-hover-bg: rgba(255, 255, 255, 0.1);
     --profile-border: rgba(255, 255, 255, 0.2);
+    left: 50%;
+    transform: translateX(-700px);
 }
 
 .sidebar-content {
@@ -82,10 +86,10 @@ body {
 
 /* メインコンテンツ */
 .main-content {
-    margin-left: 300px;
+    margin-left: 400px;
     flex: 1;
-    padding: 2rem;
-    max-width: 900px;
+    padding: 2rem 3rem;
+    max-width: 800px;
     width: 100%;
 }
 
@@ -102,20 +106,22 @@ body {
     margin-bottom: 2rem;
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    position: relative;
+    padding-bottom: 3rem;
 }
 
 .post-card h2 {
     color: #2c3e50;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
     font-size: 1.5rem;
 }
 
 .post-meta {
-    color: #666;
-    font-size: 0.85rem;
-    margin-bottom: 1rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid #eee;
+    color: #999;
+    font-size: 0.8rem;
+    position: absolute;
+    bottom: 1rem;
+    right: 1.5rem;
 }
 
 .post-content {
@@ -357,6 +363,8 @@ button:disabled {
         width: 100%;
         height: auto;
         position: relative;
+        left: 0;
+        transform: none;
     }
     
     .main-content {
@@ -375,5 +383,32 @@ button:disabled {
     
     .blog-title {
         font-size: 1.5rem;
+    }
+    
+    .post-card {
+        padding-bottom: 2rem;
+    }
+    
+    .post-meta {
+        position: static;
+        text-align: right;
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid #eee;
+    }
+}
+
+/* 大画面対応 */
+@media (min-width: 1600px) {
+    .layout-container {
+        max-width: 1600px;
+    }
+    
+    .sidebar {
+        transform: translateX(-800px);
+    }
+    
+    .main-content {
+        max-width: 900px;
     }
 }

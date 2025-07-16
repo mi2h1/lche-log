@@ -11,15 +11,11 @@ function initSupabase() {
 
 function formatDate(dateString) {
     const date = new Date(dateString);
-    // JSTで表示
-    return date.toLocaleDateString('ja-JP', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        timeZone: 'Asia/Tokyo'
-    });
+    // JSTで表示 (yyyy/mm/dd形式)
+    const year = date.toLocaleDateString('ja-JP', { year: 'numeric', timeZone: 'Asia/Tokyo' });
+    const month = date.toLocaleDateString('ja-JP', { month: '2-digit', timeZone: 'Asia/Tokyo' });
+    const day = date.toLocaleDateString('ja-JP', { day: '2-digit', timeZone: 'Asia/Tokyo' });
+    return `${year}/${month}/${day}`;
 }
 
 // 現在時刻をJSTで取得する関数
