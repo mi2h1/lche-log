@@ -132,6 +132,62 @@ function hexToRgb(hex) {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
+    checkLoginStatus();
     await loadBlogSettings();
     await loadPosts();
 });
+
+function checkLoginStatus() {
+    const isLoggedIn = checkLogin();
+    const adminLinks = document.querySelectorAll('.nav-link[href="admin.html"], .nav-link[href="settings.html"]');
+    
+    if (!isLoggedIn) {
+        // 未ログインの場合は管理系のリンクを非表示
+        adminLinks.forEach(link => {
+            link.style.display = 'none';
+        });
+    } else {
+        // ログイン済みの場合はログアウトボタンを追加
+        const nav = document.querySelector('.sidebar-nav');
+        if (nav && !document.getElementById('logout-link')) {
+            const logoutLink = document.createElement('a');
+            logoutLink.id = 'logout-link';
+            logoutLink.href = '#';
+            logoutLink.className = 'nav-link';
+            logoutLink.textContent = 'ログアウト';
+            logoutLink.style.marginTop = '20px';
+            logoutLink.style.borderTop = '1px solid rgba(255,255,255,0.2)';
+            logoutLink.style.paddingTop = '20px';
+            logoutLink.onclick = (e) => {
+                e.preventDefault();
+                if (confirm('ログアウトしますか？')) {
+                    localStorage.removeItem('blog_session');
+                    window.location.reload();
+                }
+            };
+            nav.appendChild(logoutLink);
+        }
+    }
+}
+
+function checkLogin() {
+    const session = localStorage.getItem('blog_session');
+    if (!session) return false;
+    
+    try {
+        const sessionData = JSON.parse(session);
+        const loginTime = new Date(sessionData.loginTime);
+        const now = new Date();
+        const hoursDiff = (now - loginTime) / (1000 * 60 * 60);
+        
+        if (hoursDiff > 24) {
+            localStorage.removeItem('blog_session');
+            return false;
+        }
+        
+        return true;
+    } catch (error) {
+        localStorage.removeItem('blog_session');
+        return false;
+    }
+}

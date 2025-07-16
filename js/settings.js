@@ -1,6 +1,13 @@
 document.addEventListener('DOMContentLoaded', initializeSettings);
 
 async function initializeSettings() {
+    // ログインチェック
+    if (!checkLogin()) {
+        alert('ログインが必要です');
+        window.location.href = 'login.html';
+        return;
+    }
+    
     initSupabase();
     
     // 画像URLの変更を監視してプレビューを更新
@@ -92,7 +99,7 @@ async function handleSubmit(e) {
                     profile_bio: profileBio,
                     profile_image: profileImage,
                     color_primary: colorPrimary,
-                    updated_at: new Date().toISOString()
+                    updated_at: new Date().toISOString() // Supabaseは自動的にUTCで保存するのでISOStringのまま
                 })
                 .eq('id', existingSettings.id);
         } else {
@@ -178,4 +185,26 @@ function showMessage(message, type) {
         messageEl.textContent = '';
         messageEl.className = '';
     }, 5000);
+}
+
+function checkLogin() {
+    const session = localStorage.getItem('blog_session');
+    if (!session) return false;
+    
+    try {
+        const sessionData = JSON.parse(session);
+        const loginTime = new Date(sessionData.loginTime);
+        const now = new Date();
+        const hoursDiff = (now - loginTime) / (1000 * 60 * 60);
+        
+        if (hoursDiff > 24) {
+            localStorage.removeItem('blog_session');
+            return false;
+        }
+        
+        return true;
+    } catch (error) {
+        localStorage.removeItem('blog_session');
+        return false;
+    }
 }

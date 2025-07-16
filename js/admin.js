@@ -3,6 +3,13 @@ let simplemde;
 document.addEventListener('DOMContentLoaded', initializeAdmin);
 
 function initializeAdmin() {
+    // ログインチェック
+    if (!checkLogin()) {
+        alert('ログインが必要です');
+        window.location.href = 'login.html';
+        return;
+    }
+    
     initSupabase();
     simplemde = new SimpleMDE({
         element: document.getElementById('content'),
@@ -41,7 +48,7 @@ async function handleSubmit(e) {
                 {
                     title: title,
                     content: content,
-                    created_at: new Date().toISOString()
+                    created_at: new Date().toISOString() // Supabaseは自動的にUTCで保存するのでISOStringのまま
                 }
             ])
             .select();
@@ -76,4 +83,26 @@ function showMessage(message, type) {
         messageEl.textContent = '';
         messageEl.className = '';
     }, 5000);
+}
+
+function checkLogin() {
+    const session = localStorage.getItem('blog_session');
+    if (!session) return false;
+    
+    try {
+        const sessionData = JSON.parse(session);
+        const loginTime = new Date(sessionData.loginTime);
+        const now = new Date();
+        const hoursDiff = (now - loginTime) / (1000 * 60 * 60);
+        
+        if (hoursDiff > 24) {
+            localStorage.removeItem('blog_session');
+            return false;
+        }
+        
+        return true;
+    } catch (error) {
+        localStorage.removeItem('blog_session');
+        return false;
+    }
 }

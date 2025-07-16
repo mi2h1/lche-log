@@ -28,6 +28,21 @@ CREATE TABLE blog_settings (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+
+-- ユーザーテーブル（認証用）
+CREATE TABLE users (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  username TEXT UNIQUE NOT NULL,
+  password_hash TEXT NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 初期ユーザーの登録例
+-- パスワードのハッシュ化にはオンラインツール（https://emn178.github.io/online-tools/sha256.html）を使用
+-- または、ブラウザのコンソールで以下を実行：
+-- await crypto.subtle.digest('SHA-256', new TextEncoder().encode('your_password')).then(hash => Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join(''))
+-- 
+-- 例: INSERT INTO users (username, password_hash) VALUES ('admin', 'your_hash_here');
 ```
 
 3. プロジェクトのURLとanon keyを取得
@@ -50,8 +65,9 @@ CREATE TABLE blog_settings (
 ## 使い方
 
 - **ホームページ** (`index.html`): ブログ記事を全文表示（サイドバー付き）
-- **新規投稿** (`admin.html`): 新しい記事を投稿（Markdownエディタ付き）
-- **ブログ設定** (`settings.html`): ブログタイトル、プロフィール、アイコンを編集
+- **ログイン** (`login.html`): 管理者ログイン（URLは非公開、直接アクセスのみ）
+- **新規投稿** (`admin.html`): 新しい記事を投稿（Markdownエディタ付き）※要ログイン
+- **ブログ設定** (`settings.html`): ブログタイトル、プロフィール、アイコンを編集 ※要ログイン
 
 ## 機能
 
@@ -60,8 +76,9 @@ CREATE TABLE blog_settings (
 - 自動保存機能
 - レスポンシブデザイン
 - 完全な静的サイト（サーバー不要）
+- ログイン認証機能（管理画面へのアクセス制限）
 
 ## 注意事項
 
-- 管理画面は誰でもアクセスできるため、本番環境では認証機能の追加を推奨
+- ログインページ（`login.html`）へのリンクは意図的に設置していません。URLを知っている管理者のみアクセス可能です
 - Supabaseの無料プランには制限があるため、アクセス数が多い場合は有料プランを検討
