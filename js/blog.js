@@ -92,10 +92,20 @@ function applySettings(settings) {
     if (settings.blog_title) {
         document.querySelector('.blog-title').textContent = settings.blog_title;
         document.title = settings.blog_title;
+        // モバイルヘッダーも更新
+        const mobileTitleEl = document.querySelector('.mobile-blog-title');
+        if (mobileTitleEl) {
+            mobileTitleEl.textContent = settings.blog_title;
+        }
     }
     
     if (settings.profile_bio) {
         document.querySelector('.profile-bio').innerHTML = settings.profile_bio.replace(/\n/g, '<br>');
+        // モバイルヘッダーの説明も更新（改行を削除して1行で表示）
+        const mobileDescEl = document.querySelector('.mobile-blog-description');
+        if (mobileDescEl) {
+            mobileDescEl.textContent = settings.profile_bio.replace(/\n/g, ' ').substring(0, 50) + '...';
+        }
     }
     
     if (settings.profile_image) {
@@ -104,11 +114,25 @@ function applySettings(settings) {
         profileImg.onerror = function() {
             this.src = 'https://via.placeholder.com/150';
         };
+        // モバイルヘッダーの画像も更新
+        const mobileImg = document.querySelector('.mobile-profile-image');
+        if (mobileImg) {
+            mobileImg.src = settings.profile_image;
+            mobileImg.onerror = function() {
+                this.src = 'https://via.placeholder.com/150';
+            };
+        }
     }
     
     if (settings.color_primary) {
         const sidebar = document.querySelector('.sidebar');
         sidebar.style.backgroundColor = settings.color_primary;
+        
+        // モバイルヘッダーの背景色も更新
+        const mobileHeader = document.querySelector('.mobile-header');
+        if (mobileHeader) {
+            mobileHeader.style.backgroundColor = settings.color_primary;
+        }
         
         // 背景色の明度を計算して文字色とリンクのスタイルを自動調整
         const rgb = hexToRgb(settings.color_primary);
@@ -120,12 +144,18 @@ function applySettings(settings) {
             sidebar.style.setProperty('--link-color', '#333333');
             sidebar.style.setProperty('--link-hover-bg', 'rgba(0, 0, 0, 0.1)');
             sidebar.style.setProperty('--profile-border', 'rgba(0, 0, 0, 0.2)');
+            if (mobileHeader) {
+                mobileHeader.style.color = '#333333';
+            }
         } else {
             // 暗い背景色の場合
             sidebar.style.color = '#ffffff';
             sidebar.style.setProperty('--link-color', '#ffffff');
             sidebar.style.setProperty('--link-hover-bg', 'rgba(255, 255, 255, 0.1)');
             sidebar.style.setProperty('--profile-border', 'rgba(255, 255, 255, 0.2)');
+            if (mobileHeader) {
+                mobileHeader.style.color = '#ffffff';
+            }
         }
     }
 }
@@ -143,7 +173,46 @@ document.addEventListener('DOMContentLoaded', async () => {
     checkLoginStatus();
     await loadBlogSettings();
     await loadPosts();
+    initMobileMenu();
 });
+
+function initMobileMenu() {
+    const menuToggle = document.getElementById('mobile-menu-toggle');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    const closeBtn = document.getElementById('sidebar-close');
+    
+    if (menuToggle) {
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.add('active');
+            overlay.classList.add('active');
+        });
+    }
+    
+    // 閉じる処理をまとめる
+    const closeSidebar = () => {
+        sidebar.classList.remove('active');
+        overlay.classList.remove('active');
+    };
+    
+    if (overlay) {
+        overlay.addEventListener('click', closeSidebar);
+    }
+    
+    if (closeBtn) {
+        closeBtn.addEventListener('click', closeSidebar);
+    }
+    
+    // サイドバー内のリンクをクリックしたときもメニューを閉じる
+    const navLinks = document.querySelectorAll('.sidebar .nav-link');
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            if (window.innerWidth <= 768) {
+                closeSidebar();
+            }
+        });
+    });
+}
 
 function checkLoginStatus() {
     const isLoggedIn = checkLogin();

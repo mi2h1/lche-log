@@ -7,8 +7,23 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+    <!-- モバイルヘッダー -->
+    <header class="mobile-header">
+        <div class="mobile-header-content">
+            <img src="https://via.placeholder.com/150" alt="Profile" class="mobile-profile-image" id="mobile-menu-toggle">
+            <div class="mobile-header-text">
+                <h1 class="mobile-blog-title">My Blog</h1>
+                <p class="mobile-blog-description">ここにプロフィールを書きます。</p>
+            </div>
+        </div>
+    </header>
+    
+    <!-- オーバーレイ -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+    
     <div class="layout-container">
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar">
+            <button class="sidebar-close" id="sidebar-close">×</button>
             <div class="sidebar-content">
                 <div class="profile-section">
                     <img src="https://via.placeholder.com/150" alt="Profile" class="profile-image">

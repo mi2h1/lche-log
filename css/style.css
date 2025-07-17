@@ -360,14 +360,124 @@ button:disabled {
     opacity: 0.9;
 }
 
+/* モバイルヘッダー（デフォルトは非表示） */
+.mobile-header {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 70px;
+    background-color: #2c3e50;
+    color: white;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.mobile-header-content {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding: 0 1rem;
+}
+
+.mobile-profile-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 1rem;
+    cursor: pointer;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.mobile-header-text {
+    flex: 1;
+}
+
+.mobile-blog-title {
+    font-size: 1.2rem;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.mobile-blog-description {
+    font-size: 0.8rem;
+    margin: 0;
+    opacity: 0.8;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* サイドバーオーバーレイ */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1100;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar-overlay.active {
+    display: block;
+    opacity: 1;
+}
+
+/* サイドバー閉じるボタン */
+.sidebar-close {
+    display: none;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    color: inherit;
+    font-size: 2rem;
+    cursor: pointer;
+    padding: 0;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+}
+
+.sidebar-close:hover {
+    opacity: 1;
+}
+
 /* レスポンシブデザイン */
 @media (max-width: 768px) {
+    .mobile-header {
+        display: block;
+    }
+    
+    body {
+        padding-top: 70px;
+    }
+    
     .sidebar {
-        width: 100%;
-        height: auto;
-        position: relative;
-        left: 0;
+        width: 280px;
+        height: 100vh;
+        position: fixed;
+        left: -280px;
         transform: none;
+        transition: left 0.3s ease;
+        z-index: 1200;
+    }
+    
+    .sidebar.active {
+        left: 0;
+    }
+    
+    .sidebar-close {
+        display: block;
     }
     
     .main-content {
