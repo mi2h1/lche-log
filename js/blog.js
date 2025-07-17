@@ -104,7 +104,9 @@ function applySettings(settings) {
         // モバイルヘッダーの説明も更新（改行を削除して1行で表示）
         const mobileDescEl = document.querySelector('.mobile-blog-description');
         if (mobileDescEl) {
-            mobileDescEl.textContent = settings.profile_bio.replace(/\n/g, ' ').substring(0, 50) + '...';
+            // 改行をスペースに置換して、最初の行のみ表示
+            const firstLine = settings.profile_bio.split('\n')[0];
+            mobileDescEl.textContent = firstLine;
         }
     }
     
