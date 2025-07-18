@@ -26,6 +26,11 @@ async function loadPosts() {
             return;
         }
         
+        // 最新記事でTwitter Cardを更新
+        if (posts.length > 0) {
+            updateTwitterCard(posts[0]);
+        }
+        
         posts.forEach(post => {
             const postCard = document.createElement('div');
             postCard.className = 'post-card';
@@ -55,6 +60,55 @@ function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+}
+
+function updateTwitterCard(latestPost) {
+    // 記事の内容から最初の200文字を説明文として取得
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = marked.parse(latestPost.content);
+    const textContent = tempDiv.textContent || tempDiv.innerText || '';
+    const description = textContent.substring(0, 200) + (textContent.length > 200 ? '...' : '');
+    
+    // 現在のブログ設定を取得
+    const cachedSettings = localStorage.getItem('blog_settings');
+    let blogTitle = 'My Blog';
+    let profileImage = 'https://via.placeholder.com/1200x630';
+    
+    if (cachedSettings) {
+        const settings = JSON.parse(cachedSettings);
+        blogTitle = settings.blog_title || blogTitle;
+        profileImage = settings.profile_image || profileImage;
+    }
+    
+    // Twitter Card用のタイトル（最新記事のタイトル + ブログ名）
+    const cardTitle = `${latestPost.title} | ${blogTitle}`;
+    
+    // メタタグを更新
+    updateMetaTag('twitter:title', cardTitle);
+    updateMetaTag('twitter:description', description);
+    updateMetaTag('twitter:image', profileImage);
+    
+    // Open Graph タグも更新
+    updateMetaTag('og:title', cardTitle, 'property');
+    updateMetaTag('og:description', description, 'property');
+    updateMetaTag('og:image', profileImage, 'property');
+    updateMetaTag('og:url', window.location.href, 'property');
+    
+    // ページタイトルも更新
+    document.title = cardTitle;
+}
+
+function updateMetaTag(name, content, attribute = 'name') {
+    let selector = `meta[${attribute}="${name}"]`;
+    let metaTag = document.querySelector(selector);
+    
+    if (!metaTag) {
+        metaTag = document.createElement('meta');
+        metaTag.setAttribute(attribute, name);
+        document.head.appendChild(metaTag);
+    }
+    
+    metaTag.setAttribute('content', content);
 }
 
 async function loadBlogSettings() {
