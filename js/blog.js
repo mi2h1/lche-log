@@ -71,7 +71,7 @@ function updateTwitterCard(latestPost) {
     
     // 現在のブログ設定を取得
     const cachedSettings = localStorage.getItem('blog_settings');
-    let blogTitle = 'My Blog';
+    let blogTitle = '開拓日誌';
     let profileImage = 'https://via.placeholder.com/1200x630';
     
     if (cachedSettings) {
