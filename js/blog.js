@@ -94,8 +94,8 @@ function updateTwitterCard(latestPost) {
     updateMetaTag('og:image', profileImage, 'property');
     updateMetaTag('og:url', window.location.href, 'property');
     
-    // ページタイトルも更新
-    document.title = cardTitle;
+    // ページタイトルはブログタイトルのみ
+    document.title = blogTitle;
 }
 
 function updateMetaTag(name, content, attribute = 'name') {
