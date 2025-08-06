@@ -66,6 +66,13 @@ async function loadPosts() {
         const users = usersResponse.data || [];
         const categories = categoriesResponse.data || [];
         
+        // デバッグ情報
+        console.log('Posts loaded:', posts.length);
+        console.log('VS Records loaded:', vsRecords.length);
+        console.log('Users loaded:', users.length);
+        console.log('Categories loaded:', categories.length);
+        console.log('VS Records data:', vsRecords);
+        
         // VS記録にユーザー情報とカテゴリ情報を結合
         const vsRecordsWithUserInfo = vsRecords.map(record => {
             const user = users.find(u => u.id === record.user_id);
