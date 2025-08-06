@@ -133,7 +133,11 @@ body {
 .post-card h2 {
     color: #2c3e50;
     margin-bottom: 1.5rem;
-    font-size: 1.5rem;
+    font-size: 1.3rem;
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .post-meta {
@@ -535,6 +539,14 @@ button:disabled {
         padding-bottom: 2rem;
     }
     
+    .post-card h2 {
+        font-size: 1.1rem;
+    }
+    
+    .vs-title h2 {
+        font-size: 1rem;
+    }
+    
     .post-meta {
         position: static;
         text-align: right;
@@ -647,8 +659,12 @@ button:disabled {
 .vs-title h2 {
     margin: 0;
     color: #333;
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     font-weight: 600;
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 /* VS画像コンテナ */
