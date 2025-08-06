@@ -103,14 +103,7 @@ body {
 /* タブレット以上（768px〜） */
 @media (min-width: 768px) {
     #posts-container {
-        grid-template-columns: repeat(2, 1fr); /* 2列 */
-    }
-}
-
-/* 大きなデスクトップ（1400px〜） */
-@media (min-width: 1400px) {
-    #posts-container {
-        grid-template-columns: repeat(3, 1fr); /* 3列 */
+        grid-template-columns: repeat(2, 1fr); /* 2列固定 */
     }
 }
 
