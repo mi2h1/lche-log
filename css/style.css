@@ -609,7 +609,6 @@ button:disabled {
 
 /* VS記録の表示スタイル */
 .vs-record {
-    border-left: 4px solid #e74c3c;
     background-color: #fafafa;
     overflow: hidden;
     padding: 0; /* デフォルトのpost-cardパディングを削除 */
