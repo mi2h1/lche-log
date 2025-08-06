@@ -208,7 +208,10 @@ async function handleVsSubmit(e) {
         
         // 画像をアップロード
         const timestamp = Date.now();
-        const fileName = `vs-records/${timestamp}-${selectedImage.name}`;
+        const originalName = selectedImage.name;
+        const fileExtension = originalName.substring(originalName.lastIndexOf('.'));
+        const sanitizedName = sanitizeFileName(originalName);
+        const fileName = `vs-records/${timestamp}-${sanitizedName}${fileExtension}`;
         
         const { data: uploadData, error: uploadError } = await supabaseClient.storage
             .from('vs-images')
@@ -276,6 +279,21 @@ function resetVsForm() {
     // カテゴリ入力の有効化
     document.getElementById('vs-category-select').disabled = false;
     document.getElementById('vs-category-input').disabled = false;
+}
+
+// ファイル名をサニタイズする関数
+function sanitizeFileName(fileName) {
+    // ファイル拡張子を除いたベース名を取得
+    const baseName = fileName.substring(0, fileName.lastIndexOf('.'));
+    
+    // 日本語文字、特殊文字、スペースを安全な文字に変換
+    return baseName
+        .replace(/[^\w\-_.]/g, '-') // 英数字、ハイフン、アンダースコア、ドット以外を'-'に変換
+        .replace(/\s+/g, '-') // スペースを'-'に変換
+        .replace(/-+/g, '-') // 連続する'-'を1つに
+        .replace(/^-|-$/g, '') // 先頭末尾の'-'を削除
+        .substring(0, 50) // 最大50文字に制限
+        || 'image'; // 空文字列の場合のフォールバック
 }
 
 // メッセージ表示関数（admin.jsのものと同じ）
