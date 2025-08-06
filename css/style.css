@@ -107,17 +107,10 @@ body {
     }
 }
 
-/* デスクトップ（1200px〜） */
-@media (min-width: 1200px) {
-    #posts-container {
-        grid-template-columns: repeat(3, 1fr); /* 3列 */
-    }
-}
-
 /* 大きなデスクトップ（1600px〜） */
 @media (min-width: 1600px) {
     #posts-container {
-        grid-template-columns: repeat(4, 1fr); /* 4列 */
+        grid-template-columns: repeat(3, 1fr); /* 3列 */
     }
 }
 
