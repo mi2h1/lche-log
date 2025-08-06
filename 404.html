@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>開拓日誌</title>
+    <script>
+        // GitHub Pages での擬似ルーティング
+        const routes = {
+            '/login': 'login.html',
+            '/admin': 'admin.html', 
+            '/posts': 'post.html',
+            '/settings': 'settings.html'
+        };
+        
+        const path = window.location.pathname.replace('/lche-log', '');
+        const targetFile = routes[path];
+        
+        if (targetFile) {
+            // 履歴を汚さずにリダイレクト
+            window.location.replace(window.location.origin + '/lche-log/' + targetFile);
+        } else {
+            // 不明なパスはトップページへ
+            window.location.replace(window.location.origin + '/lche-log/');
+        }
+    </script>
+</head>
+<body>
+    <p>リダイレクト中...</p>
+</body>
+</html>
