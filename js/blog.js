@@ -84,13 +84,6 @@ async function loadPosts() {
         // 統合タイムラインを表示
         allItems.forEach(item => {
             const itemCard = document.createElement('div');
-            itemCard.style.cursor = 'pointer';
-            
-            // カードクリックイベントを追加
-            itemCard.addEventListener('click', () => {
-                const articleUrl = `article.html?id=${item.id}&type=${item.type}`;
-                window.location.href = articleUrl;
-            });
             
             if (item.type === 'vs') {
                 // VS記録の表示
