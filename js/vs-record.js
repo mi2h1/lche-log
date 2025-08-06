@@ -221,13 +221,25 @@ async function handleVsSubmit(e) {
             .from('vs-images')
             .getPublicUrl(fileName);
         
+        // 現在のユーザーIDを取得
+        const session = localStorage.getItem('blog_session');
+        const sessionData = JSON.parse(session);
+        const { data: userData, error: userError } = await supabaseClient
+            .from('users')
+            .select('id')
+            .eq('username', sessionData.username)
+            .single();
+        
+        if (userError) throw userError;
+        
         // VS記録を保存
         const vsRecord = {
             category_id: categoryId,
             title: document.getElementById('vs-title').value,
             image_url: publicUrl,
             record_date: document.getElementById('vs-date').value,
-            description: document.getElementById('vs-description').value
+            description: document.getElementById('vs-description').value,
+            user_id: userData.id
         };
         
         const { data, error } = await supabaseClient

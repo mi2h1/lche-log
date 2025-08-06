@@ -24,6 +24,10 @@ async function loadPosts() {
                     *,
                     categories (
                         name
+                    ),
+                    users (
+                        display_name,
+                        username
                     )
                 `)
                 .order('created_at', { ascending: false })
@@ -61,9 +65,10 @@ async function loadPosts() {
             if (item.type === 'vs') {
                 // VS記録の表示
                 itemCard.className = 'post-card vs-record';
+                const displayName = item.users?.display_name || item.users?.username || '投稿者';
                 itemCard.innerHTML = `
                     <div class="vs-title">
-                        <h2>vs ${escapeHtml(item.title)}</h2>
+                        <h2>${escapeHtml(displayName)} vs ${escapeHtml(item.title)}</h2>
                     </div>
                     <div class="vs-image-container">
                         <img src="${item.image_url}" alt="${escapeHtml(item.title)}" class="vs-image">
