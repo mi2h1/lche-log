@@ -36,6 +36,7 @@ async function initializeSettings() {
     // フォームの送信イベント
     document.getElementById('settings-form').addEventListener('submit', handleSubmit);
     document.getElementById('user-settings-form').addEventListener('submit', handleUserSettings);
+    document.getElementById('password-change-form').addEventListener('submit', handlePasswordChange);
     document.getElementById('user-register-form').addEventListener('submit', handleUserRegister);
     
     // 権限に基づいて表示制御
@@ -298,6 +299,59 @@ async function handleUserSettings(e) {
     } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = '表示名を更新';
+    }
+}
+
+// パスワード変更処理
+async function handlePasswordChange(e) {
+    e.preventDefault();
+    
+    const newPassword = document.getElementById('new-password-change').value;
+    const confirmPassword = document.getElementById('confirm-password-change').value;
+    
+    // バリデーション
+    if (newPassword.length < 4) {
+        showMessage('パスワードは4文字以上で入力してください', 'error');
+        return;
+    }
+    
+    if (newPassword !== confirmPassword) {
+        showMessage('パスワードが一致しません', 'error');
+        return;
+    }
+    
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.textContent = '変更中...';
+    
+    try {
+        const session = localStorage.getItem('blog_session');
+        const sessionData = JSON.parse(session);
+        const username = sessionData.username;
+        
+        // パスワードをSHA-256でハッシュ化
+        const passwordHash = await hashPassword(newPassword);
+        
+        // パスワードを更新
+        const { data, error } = await supabaseClient
+            .from('users')
+            .update({ password_hash: passwordHash })
+            .eq('username', username)
+            .select();
+        
+        if (error) throw error;
+        
+        showMessage('パスワードを変更しました！', 'success');
+        
+        // フォームをリセット
+        document.getElementById('password-change-form').reset();
+        
+    } catch (error) {
+        console.error('Error changing password:', error);
+        showMessage('パスワードの変更に失敗しました: ' + error.message, 'error');
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'パスワードを変更';
     }
 }
 

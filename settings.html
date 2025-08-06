@@ -72,6 +72,24 @@
                     
                     <button type="submit">表示名を更新</button>
                 </form>
+                
+                <!-- パスワード変更フォーム -->
+                <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #ddd;">
+                    <h3>パスワード変更</h3>
+                    <form id="password-change-form">
+                        <div class="form-group">
+                            <label for="new-password-change">新しいパスワード</label>
+                            <input type="password" id="new-password-change" placeholder="4文字以上のパスワード" minlength="4" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="confirm-password-change">新しいパスワード確認</label>
+                            <input type="password" id="confirm-password-change" placeholder="パスワードを再入力" minlength="4" required>
+                        </div>
+                        
+                        <button type="submit">パスワードを変更</button>
+                    </form>
+                </div>
             </div>
             
             <!-- ユーザー新規登録フォーム -->
