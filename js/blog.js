@@ -54,9 +54,19 @@ async function loadPosts() {
         
         loadingEl.style.display = 'none';
         
+        // 通常記事にもユーザー情報を結合
+        const postsWithUserInfo = posts.map(post => {
+            const user = users.find(u => u.id === post.user_id);
+            return {
+                ...post,
+                type: 'blog',
+                users: user
+            };
+        });
+        
         // 両方のデータを統合してソート
         const allItems = [
-            ...posts.map(post => ({ ...post, type: 'blog' })),
+            ...postsWithUserInfo,
             ...vsRecordsWithUserInfo.map(record => ({ ...record, type: 'vs' }))
         ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
         
@@ -96,6 +106,7 @@ async function loadPosts() {
                 // ブログ記事の表示
                 itemCard.className = 'post-card';
                 const htmlContent = marked.parse(item.content);
+                const displayName = item.users?.display_name || item.users?.username || '投稿者';
                 
                 itemCard.innerHTML = `
                     <h2>${escapeHtml(item.title)}</h2>
@@ -103,7 +114,8 @@ async function loadPosts() {
                         ${htmlContent}
                     </div>
                     <div class="post-meta">
-                        ${formatDate(item.created_at)}
+                        <span class="post-date">${formatDate(item.created_at)}</span>
+                        <span class="post-author">by ${escapeHtml(displayName)}</span>
                     </div>
                 `;
             }

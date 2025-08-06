@@ -148,7 +148,16 @@ body {
     font-size: 0.8rem;
     position: absolute;
     bottom: 1rem;
+    left: 1.5rem;
     right: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.post-author {
+    color: #bbb;
+    font-size: 0.75rem;
 }
 
 .post-content {
