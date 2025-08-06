@@ -60,6 +60,29 @@
                 <button type="submit">設定を保存</button>
             </form>
             
+            <!-- ユーザー新規登録フォーム -->
+            <div style="margin-top: 3rem; padding-top: 2rem; border-top: 2px solid #eee;">
+                <h2>ユーザー新規登録</h2>
+                <form id="user-register-form">
+                    <div class="form-group">
+                        <label for="new-username">ユーザー名</label>
+                        <input type="text" id="new-username" placeholder="ユーザー名を入力" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="new-password">パスワード</label>
+                        <input type="password" id="new-password" placeholder="4文字以上のパスワード" minlength="4" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="new-password-confirm">パスワード確認</label>
+                        <input type="password" id="new-password-confirm" placeholder="パスワードを再入力" minlength="4" required>
+                    </div>
+                    
+                    <button type="submit">ユーザーを作成</button>
+                </form>
+            </div>
+            
             <div id="message"></div>
         </div>
     </main>

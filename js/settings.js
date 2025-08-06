@@ -35,6 +35,7 @@ async function initializeSettings() {
     
     // フォームの送信イベント
     document.getElementById('settings-form').addEventListener('submit', handleSubmit);
+    document.getElementById('user-register-form').addEventListener('submit', handleUserRegister);
     
     // 既存の設定を読み込む
     await loadSettings();
@@ -185,6 +186,78 @@ function showMessage(message, type) {
         messageEl.textContent = '';
         messageEl.className = '';
     }, 5000);
+}
+
+// ユーザー新規登録処理
+async function handleUserRegister(e) {
+    e.preventDefault();
+    
+    const username = document.getElementById('new-username').value.trim();
+    const password = document.getElementById('new-password').value;
+    const passwordConfirm = document.getElementById('new-password-confirm').value;
+    
+    // バリデーション
+    if (!username) {
+        showMessage('ユーザー名を入力してください', 'error');
+        return;
+    }
+    
+    if (password.length < 4) {
+        showMessage('パスワードは4文字以上で入力してください', 'error');
+        return;
+    }
+    
+    if (password !== passwordConfirm) {
+        showMessage('パスワードが一致しません', 'error');
+        return;
+    }
+    
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.textContent = '作成中...';
+    
+    try {
+        // パスワードをSHA-256でハッシュ化
+        const passwordHash = await hashPassword(password);
+        
+        // ユーザーをデータベースに挿入
+        const { data, error } = await supabaseClient
+            .from('users')
+            .insert({
+                username: username,
+                password_hash: passwordHash
+            })
+            .select();
+        
+        if (error) {
+            if (error.code === '23505') { // unique constraint violation
+                throw new Error('このユーザー名は既に使用されています');
+            }
+            throw error;
+        }
+        
+        showMessage(`ユーザー「${username}」を作成しました！`, 'success');
+        
+        // フォームをリセット
+        document.getElementById('user-register-form').reset();
+        
+    } catch (error) {
+        console.error('Error creating user:', error);
+        showMessage('ユーザーの作成に失敗しました: ' + error.message, 'error');
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'ユーザーを作成';
+    }
+}
+
+// SHA-256ハッシュ関数
+async function hashPassword(password) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(password);
+    const hash = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hash));
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    return hashHex;
 }
 
 function checkLogin() {
