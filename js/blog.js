@@ -11,43 +11,89 @@ async function loadPosts() {
     const postsContainer = document.getElementById('posts-container');
     
     try {
-        const { data: posts, error } = await supabaseClient
-            .from('posts')
-            .select('*')
-            .eq('status', 'published')
-            .order('created_at', { ascending: false });
+        // ブログ記事とVS記録の両方を取得
+        const [postsResponse, vsRecordsResponse] = await Promise.all([
+            supabaseClient
+                .from('posts')
+                .select('*')
+                .eq('status', 'published')
+                .order('created_at', { ascending: false }),
+            supabaseClient
+                .from('vs_records')
+                .select(`
+                    *,
+                    categories (
+                        name
+                    )
+                `)
+                .order('created_at', { ascending: false })
+        ]);
         
-        if (error) throw error;
+        if (postsResponse.error) throw postsResponse.error;
+        if (vsRecordsResponse.error) throw vsRecordsResponse.error;
+        
+        const posts = postsResponse.data || [];
+        const vsRecords = vsRecordsResponse.data || [];
         
         loadingEl.style.display = 'none';
         
-        if (posts.length === 0) {
+        // 両方のデータを統合してソート
+        const allItems = [
+            ...posts.map(post => ({ ...post, type: 'blog' })),
+            ...vsRecords.map(record => ({ ...record, type: 'vs' }))
+        ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        
+        if (allItems.length === 0) {
             postsContainer.innerHTML = '<p>まだ投稿がありません。</p>';
             return;
         }
         
-        // 最新記事でTwitter Cardを更新
-        if (posts.length > 0) {
-            updateTwitterCard(posts[0]);
+        // 最新のブログ記事でTwitter Cardを更新
+        const latestPost = posts.find(post => post.type === 'blog' || !post.type);
+        if (latestPost) {
+            updateTwitterCard(latestPost);
         }
         
-        posts.forEach(post => {
-            const postCard = document.createElement('div');
-            postCard.className = 'post-card';
+        // 統合タイムラインを表示
+        allItems.forEach(item => {
+            const itemCard = document.createElement('div');
             
-            // Markdownをパース
-            const htmlContent = marked.parse(post.content);
+            if (item.type === 'vs') {
+                // VS記録の表示
+                itemCard.className = 'post-card vs-record';
+                itemCard.innerHTML = `
+                    <div class="vs-header">
+                        <span class="vs-category">${item.categories?.name || 'カテゴリなし'}</span>
+                        <span class="vs-date">${formatDate(item.record_date)}</span>
+                    </div>
+                    <div class="vs-content">
+                        <img src="${item.image_url}" alt="${escapeHtml(item.title)}" class="vs-image">
+                        <div class="vs-info">
+                            <h3>vs ${escapeHtml(item.title)}</h3>
+                            ${item.description ? `<p class="vs-description">${escapeHtml(item.description)}</p>` : ''}
+                        </div>
+                    </div>
+                    <div class="post-meta">
+                        ${formatDate(item.created_at)}
+                    </div>
+                `;
+            } else {
+                // ブログ記事の表示
+                itemCard.className = 'post-card';
+                const htmlContent = marked.parse(item.content);
+                
+                itemCard.innerHTML = `
+                    <h2>${escapeHtml(item.title)}</h2>
+                    <div class="post-content">
+                        ${htmlContent}
+                    </div>
+                    <div class="post-meta">
+                        ${formatDate(item.created_at)}
+                    </div>
+                `;
+            }
             
-            postCard.innerHTML = `
-                <h2>${escapeHtml(post.title)}</h2>
-                <div class="post-content">
-                    ${htmlContent}
-                </div>
-                <div class="post-meta">
-                    ${formatDate(post.created_at)}
-                </div>
-            `;
-            postsContainer.appendChild(postCard);
+            postsContainer.appendChild(itemCard);
         });
         
     } catch (error) {
