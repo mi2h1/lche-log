@@ -91,6 +91,36 @@ body {
     justify-content: center;
 }
 
+/* 投稿コンテナ - グリッドレイアウト */
+#posts-container {
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: 1fr; /* デフォルトは1列 */
+    max-width: 1200px; /* 最大幅を設定 */
+    width: 100%;
+}
+
+/* タブレット以上（768px〜） */
+@media (min-width: 768px) {
+    #posts-container {
+        grid-template-columns: repeat(2, 1fr); /* 2列 */
+    }
+}
+
+/* デスクトップ（1200px〜） */
+@media (min-width: 1200px) {
+    #posts-container {
+        grid-template-columns: repeat(3, 1fr); /* 3列 */
+    }
+}
+
+/* 大きなデスクトップ（1600px〜） */
+@media (min-width: 1600px) {
+    #posts-container {
+        grid-template-columns: repeat(4, 1fr); /* 4列 */
+    }
+}
+
 #loading {
     text-align: center;
     padding: 2rem;
@@ -630,14 +660,17 @@ button:disabled {
 .vs-image-container {
     margin: 1rem 0;
     width: 100%;
+    aspect-ratio: 16/9; /* アスペクト比を維持 */
+    overflow: hidden;
 }
 
 .vs-image {
     width: 100%;
-    height: auto;
+    height: 100%;
     display: block;
     border-radius: 0;
     box-shadow: none;
+    object-fit: cover; /* 画像をコンテナにフィット */
 }
 
 /* VSフッター（カテゴリと日付） */
