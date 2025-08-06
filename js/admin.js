@@ -70,9 +70,12 @@ function setupPostTypeTabs() {
     const tabs = document.querySelectorAll('.post-type-tab');
     const contents = document.querySelectorAll('.post-type-content');
     
+    console.log('タブの数:', tabs.length, 'コンテンツの数:', contents.length);
+    
     tabs.forEach(tab => {
         tab.addEventListener('click', () => {
             const type = tab.dataset.type;
+            console.log('タブクリック:', type);
             
             // タブの切り替え
             tabs.forEach(t => t.classList.remove('active'));
@@ -82,6 +85,7 @@ function setupPostTypeTabs() {
             contents.forEach(content => {
                 if (content.id === `${type}-content`) {
                     content.classList.add('active');
+                    console.log('コンテンツ表示:', content.id);
                 } else {
                     content.classList.remove('active');
                 }

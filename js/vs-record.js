@@ -5,11 +5,21 @@ let categories = [];
 
 // 初期化
 async function initVsRecord() {
+    console.log('VS記録機能を初期化中...');
+    
+    // 要素の存在確認
+    const vsDateEl = document.getElementById('vs-date');
+    if (!vsDateEl) {
+        console.error('VS記録の要素が見つかりません');
+        return;
+    }
+    
     await loadCategories();
     setupEventListeners();
     
     // デフォルトで今日の日付を設定
-    document.getElementById('vs-date').valueAsDate = new Date();
+    vsDateEl.valueAsDate = new Date();
+    console.log('VS記録機能の初期化完了');
 }
 
 // カテゴリを読み込む
@@ -221,4 +231,18 @@ function resetVsForm() {
     // カテゴリ入力の有効化
     document.getElementById('vs-category-select').disabled = false;
     document.getElementById('vs-category-input').disabled = false;
+}
+
+// メッセージ表示関数（admin.jsのものと同じ）
+function showMessage(message, type) {
+    const messageEl = document.getElementById('message');
+    if (!messageEl) return;
+    
+    messageEl.textContent = message;
+    messageEl.className = type;
+    
+    setTimeout(() => {
+        messageEl.textContent = '';
+        messageEl.className = '';
+    }, 5000);
 }
