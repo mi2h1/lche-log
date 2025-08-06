@@ -38,6 +38,9 @@ async function initializeSettings() {
     document.getElementById('user-settings-form').addEventListener('submit', handleUserSettings);
     document.getElementById('user-register-form').addEventListener('submit', handleUserRegister);
     
+    // 権限に基づいて表示制御
+    await setupUserPermissions();
+    
     // 既存の設定を読み込む
     await loadSettings();
     await loadUserSettings();
@@ -75,6 +78,14 @@ async function loadSettings() {
 
 async function handleSubmit(e) {
     e.preventDefault();
+    
+    // admin権限チェック
+    const session = localStorage.getItem('blog_session');
+    const sessionData = JSON.parse(session);
+    if (sessionData.username !== 'admin') {
+        showMessage('この操作にはadmin権限が必要です', 'error');
+        return;
+    }
     
     const blogTitle = document.getElementById('blog-title').value;
     const profileBio = document.getElementById('profile-bio').value;
@@ -190,6 +201,35 @@ function showMessage(message, type) {
     }, 5000);
 }
 
+// ユーザー権限に基づく表示制御
+async function setupUserPermissions() {
+    try {
+        const session = localStorage.getItem('blog_session');
+        if (!session) return;
+        
+        const sessionData = JSON.parse(session);
+        const username = sessionData.username;
+        const isAdmin = username === 'admin'; // adminユーザーかチェック
+        
+        // ブログ設定フォーム
+        const blogSettingsForm = document.getElementById('settings-form').parentElement;
+        // ユーザー新規登録フォーム  
+        const userRegisterSection = document.querySelector('form#user-register-form').parentElement;
+        
+        if (!isAdmin) {
+            // admin以外はブログ設定とユーザー新規登録を非表示
+            blogSettingsForm.style.display = 'none';
+            userRegisterSection.style.display = 'none';
+            
+            // ページタイトルも変更
+            document.querySelector('h2').textContent = 'ユーザー設定';
+        }
+        
+    } catch (error) {
+        console.error('Error setting up user permissions:', error);
+    }
+}
+
 // 現在のユーザー設定を読み込む
 async function loadUserSettings() {
     try {
@@ -258,6 +298,14 @@ async function handleUserSettings(e) {
 // ユーザー新規登録処理
 async function handleUserRegister(e) {
     e.preventDefault();
+    
+    // admin権限チェック
+    const session = localStorage.getItem('blog_session');
+    const sessionData = JSON.parse(session);
+    if (sessionData.username !== 'admin') {
+        showMessage('ユーザー新規登録にはadmin権限が必要です', 'error');
+        return;
+    }
     
     const username = document.getElementById('new-username').value.trim();
     const displayName = document.getElementById('new-display-name').value.trim();
