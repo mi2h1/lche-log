@@ -128,6 +128,11 @@ async function handleSubmit(e) {
     clickedButton.textContent = status === 'draft' ? '保存中...' : '投稿中...';
     
     try {
+        // 現在のユーザーIDを取得
+        const session = localStorage.getItem('blog_session');
+        const sessionData = JSON.parse(session);
+        const userId = sessionData.userId;
+        
         const { data, error } = await supabaseClient
             .from('posts')
             .insert([
@@ -135,6 +140,7 @@ async function handleSubmit(e) {
                     title: title,
                     content: content,
                     status: status,
+                    user_id: userId,
                     created_at: new Date().toISOString()
                 }
             ])

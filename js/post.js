@@ -140,8 +140,14 @@ function displayPosts() {
         
         const userDisplayName = post.users?.display_name || post.users?.username || '不明';
         
+        // 編集権限をチェック
+        const canEdit = checkEditPermission(post);
+        const editButton = canEdit 
+            ? `<button class="btn-edit" onclick="editPost('${post.id}', '${post.type}')">編集</button>`
+            : `<button class="btn-edit-disabled" disabled title="編集権限がありません">編集</button>`;
+        
         row.innerHTML = `
-            <td class="post-title-cell" onclick="editPost('${post.id}', '${post.type}')">
+            <td class="post-title-cell ${canEdit ? 'clickable' : 'non-clickable'}" ${canEdit ? `onclick="editPost('${post.id}', '${post.type}')"` : ''}>
                 <span class="post-type ${typeClass}">${typeText}</span>
                 ${escapeHtml(post.display_title || post.title)}
             </td>
@@ -150,7 +156,7 @@ function displayPosts() {
             <td class="post-date-cell">${formatDate(post.created_at)}</td>
             <td>
                 <div class="post-actions">
-                    <button class="btn-edit" onclick="editPost('${post.id}', '${post.type}')">編集</button>
+                    ${editButton}
                 </div>
             </td>
         `;
@@ -257,6 +263,12 @@ function createPagination(totalPages) {
 async function editPost(postId, postType) {
     const post = allPosts.find(p => p.id === postId);
     if (!post) return;
+    
+    // 編集権限をチェック
+    if (!checkEditPermission(post)) {
+        showMessage('この記事を編集する権限がありません。', 'error');
+        return;
+    }
     
     // 編集セクションを表示
     document.getElementById('post-list-section').style.display = 'none';
@@ -448,6 +460,47 @@ function showMessage(message, type) {
         messageEl.textContent = '';
         messageEl.className = '';
     }, 5000);
+}
+
+// 編集権限をチェック
+function checkEditPermission(post) {
+    const session = localStorage.getItem('blog_session');
+    if (!session) return false;
+    
+    try {
+        const sessionData = JSON.parse(session);
+        const currentUsername = sessionData.username;
+        
+        // adminは全記事編集可能
+        if (currentUsername === 'admin') {
+            return true;
+        }
+        
+        // 現在のユーザーIDを取得
+        const currentUserId = getCurrentUserId();
+        if (!currentUserId) return false;
+        
+        // 投稿者のユーザーIDと一致するかチェック
+        const postUserId = post.user_id || post.users?.id;
+        return postUserId === currentUserId;
+        
+    } catch (error) {
+        console.error('Error checking edit permission:', error);
+        return false;
+    }
+}
+
+// 現在のユーザーのIDを取得
+function getCurrentUserId() {
+    const session = localStorage.getItem('blog_session');
+    if (!session) return null;
+    
+    try {
+        const sessionData = JSON.parse(session);
+        return sessionData.userId; // セッションにuserIdが保存されている前提
+    } catch (error) {
+        return null;
+    }
 }
 
 // VS記録編集フィールドの表示・非表示切り替え
