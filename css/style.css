@@ -107,8 +107,8 @@ body {
     }
 }
 
-/* 大きなデスクトップ（1600px〜） */
-@media (min-width: 1600px) {
+/* 大きなデスクトップ（1400px〜） */
+@media (min-width: 1400px) {
     #posts-container {
         grid-template-columns: repeat(3, 1fr); /* 3列 */
     }
@@ -122,7 +122,7 @@ body {
 
 #posts-container {
     width: 100%;
-    max-width: 800px;
+    max-width: 1200px;
     padding: 0 3rem;
 }
 
