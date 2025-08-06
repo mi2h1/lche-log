@@ -79,9 +79,20 @@ async function loadPosts() {
             };
         });
         
+        // 通常記事にもユーザー情報を結合
+        const postsWithUserInfo = posts.map(post => {
+            const user = users.find(u => u.id === post.user_id);
+            return {
+                ...post,
+                type: 'blog',
+                display_title: post.title,
+                users: user
+            };
+        });
+        
         // 全ての投稿を統合
         const allItems = [
-            ...posts.map(post => ({ ...post, type: 'blog', display_title: post.title })),
+            ...postsWithUserInfo,
             ...vsRecordsWithUserInfo
         ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
         
@@ -127,8 +138,7 @@ function displayPosts() {
         const typeText = post.type === 'vs' ? '[VS記録]' : '[記事]';
         const typeClass = post.type === 'vs' ? 'type-vs' : 'type-blog';
         
-        const userId = post.user_id || post.users?.id || '-';
-        const userIdShort = userId.length > 8 ? userId.substring(0, 8) + '...' : userId;
+        const userDisplayName = post.users?.display_name || post.users?.username || '不明';
         
         row.innerHTML = `
             <td class="post-title-cell" onclick="editPost('${post.id}', '${post.type}')">
@@ -136,7 +146,7 @@ function displayPosts() {
                 ${escapeHtml(post.display_title || post.title)}
             </td>
             <td><span class="status-badge ${statusClass}">${statusText}</span></td>
-            <td class="post-user-cell" title="${userId}">${userIdShort}</td>
+            <td class="post-user-cell">${escapeHtml(userDisplayName)}</td>
             <td class="post-date-cell">${formatDate(post.created_at)}</td>
             <td>
                 <div class="post-actions">
