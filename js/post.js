@@ -42,7 +42,7 @@ async function loadPosts() {
         const [postsResponse, vsRecordsResponse, usersResponse, categoriesResponse] = await Promise.all([
             supabaseClient
                 .from('posts')
-                .select('*, user_id')
+                .select('*')
                 .order('created_at', { ascending: false }),
             supabaseClient
                 .from('vs_records')
