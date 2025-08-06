@@ -21,6 +21,7 @@ async function loadPosts() {
             supabaseClient
                 .from('vs_records')
                 .select('*')
+                .eq('status', 'published')
                 .order('created_at', { ascending: false }),
             supabaseClient
                 .from('users')

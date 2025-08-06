@@ -203,6 +203,26 @@
             background-color: #555;
         }
         
+        /* 投稿タイプバッジ */
+        .post-type {
+            display: inline-block;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-right: 0.5rem;
+        }
+        
+        .type-blog {
+            background-color: #2196F3;
+            color: white;
+        }
+        
+        .type-vs {
+            background-color: #FF5722;
+            color: white;
+        }
+        
         /* レスポンシブ対応 */
         @media (max-width: 768px) {
             .post-list-table {
@@ -278,12 +298,37 @@
                 
                 <form id="edit-form">
                     <input type="hidden" id="edit-post-id">
+                    <input type="hidden" id="edit-post-type">
                     
                     <div class="form-group">
                         <label for="edit-title">タイトル</label>
                         <input type="text" id="edit-title" required>
                     </div>
                     
+                    <!-- VS記録専用フィールド -->
+                    <div class="vs-edit-field form-group" style="display: none;">
+                        <label for="edit-vs-description">説明・メモ</label>
+                        <textarea id="edit-vs-description" rows="4" placeholder="対戦の詳細や感想を入力してください"></textarea>
+                    </div>
+                    
+                    <div class="vs-edit-field form-group" style="display: none;">
+                        <label for="edit-vs-date">対戦日</label>
+                        <input type="date" id="edit-vs-date">
+                    </div>
+                    
+                    <div class="vs-edit-field form-group" style="display: none;">
+                        <label for="edit-vs-category">カテゴリ</label>
+                        <input type="text" id="edit-vs-category" readonly placeholder="カテゴリ（変更不可）">
+                        <small>※ カテゴリの変更はできません</small>
+                    </div>
+                    
+                    <div class="vs-edit-field form-group" style="display: none;">
+                        <label>現在の画像</label>
+                        <img id="edit-image-preview" style="max-width: 200px; height: auto; border-radius: 4px; display: none;" alt="対戦記録画像">
+                        <small style="display: block; margin-top: 0.5rem; color: #666;">※ 画像の変更はできません</small>
+                    </div>
+                    
+                    <!-- 通常記事用フィールド -->
                     <div class="form-group">
                         <label for="edit-content">内容（Markdown対応）</label>
                         <textarea id="edit-content"></textarea>
