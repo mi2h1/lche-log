@@ -241,16 +241,21 @@ async function handleVsSubmit(e) {
             title: document.getElementById('vs-title').value,
             image_url: publicUrl,
             record_date: document.getElementById('vs-date').value,
-            description: document.getElementById('vs-description').value,
+            description: document.getElementById('vs-description').value || '',
             user_id: userData.id,
             status: 'published'
         };
         
+        console.log('Inserting VS record:', vsRecord); // デバッグ用
+        
         const { data, error } = await supabaseClient
             .from('vs_records')
-            .insert(vsRecord);
+            .insert(vsRecord)
+            .select(); // 挿入されたデータを返すように変更
         
         if (error) throw error;
+        
+        console.log('Inserted VS record result:', data); // デバッグ用
         
         showMessage('対戦記録を投稿しました！', 'success');
         resetVsForm();
