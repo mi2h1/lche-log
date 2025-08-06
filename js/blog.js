@@ -114,8 +114,8 @@ async function loadPosts() {
                         ${htmlContent}
                     </div>
                     <div class="post-meta">
+                        <span class="post-author">${escapeHtml(displayName)}</span>
                         <span class="post-date">${formatDate(item.created_at)}</span>
-                        <span class="post-author">by ${escapeHtml(displayName)}</span>
                     </div>
                 `;
             }
