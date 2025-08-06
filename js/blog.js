@@ -12,7 +12,7 @@ async function loadPosts() {
     
     try {
         // ブログ記事とVS記録の両方を取得
-        const [postsResponse, vsRecordsResponse] = await Promise.all([
+        const [postsResponse, vsRecordsResponse, usersResponse, categoriesResponse] = await Promise.all([
             supabaseClient
                 .from('posts')
                 .select('*')
@@ -20,31 +20,43 @@ async function loadPosts() {
                 .order('created_at', { ascending: false }),
             supabaseClient
                 .from('vs_records')
-                .select(`
-                    *,
-                    categories (
-                        name
-                    ),
-                    users (
-                        display_name,
-                        username
-                    )
-                `)
-                .order('created_at', { ascending: false })
+                .select('*')
+                .order('created_at', { ascending: false }),
+            supabaseClient
+                .from('users')
+                .select('id, username, display_name'),
+            supabaseClient
+                .from('categories')
+                .select('id, name')
         ]);
         
         if (postsResponse.error) throw postsResponse.error;
         if (vsRecordsResponse.error) throw vsRecordsResponse.error;
+        if (usersResponse.error) throw usersResponse.error;
+        if (categoriesResponse.error) throw categoriesResponse.error;
         
         const posts = postsResponse.data || [];
         const vsRecords = vsRecordsResponse.data || [];
+        const users = usersResponse.data || [];
+        const categories = categoriesResponse.data || [];
+        
+        // VS記録にユーザー情報とカテゴリ情報を結合
+        const vsRecordsWithUserInfo = vsRecords.map(record => {
+            const user = users.find(u => u.id === record.user_id);
+            const category = categories.find(c => c.id === record.category_id);
+            return {
+                ...record,
+                users: user,
+                categories: category
+            };
+        });
         
         loadingEl.style.display = 'none';
         
         // 両方のデータを統合してソート
         const allItems = [
             ...posts.map(post => ({ ...post, type: 'blog' })),
-            ...vsRecords.map(record => ({ ...record, type: 'vs' }))
+            ...vsRecordsWithUserInfo.map(record => ({ ...record, type: 'vs' }))
         ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
         
         if (allItems.length === 0) {
