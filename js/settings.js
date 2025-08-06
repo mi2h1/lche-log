@@ -211,22 +211,28 @@ async function setupUserPermissions() {
         const username = sessionData.username;
         const isAdmin = username === 'admin'; // adminユーザーかチェック
         
-        // ブログ設定フォーム
-        const blogSettingsForm = document.getElementById('settings-form').parentElement;
-        // ユーザー新規登録フォーム  
-        const userRegisterSection = document.querySelector('form#user-register-form').parentElement;
-        
         if (!isAdmin) {
-            // admin以外はブログ設定とユーザー新規登録を非表示
-            blogSettingsForm.style.display = 'none';
-            userRegisterSection.style.display = 'none';
+            // ブログ設定の編集セクションを非表示
+            const blogSettingsTitle = document.querySelector('.admin-container h2');
+            const blogSettingsForm = document.getElementById('settings-form');
             
-            // ページタイトルも変更
-            document.querySelector('h2').textContent = 'ユーザー設定';
+            if (blogSettingsTitle && blogSettingsTitle.textContent.includes('ブログ設定')) {
+                blogSettingsTitle.style.display = 'none';
+            }
+            if (blogSettingsForm) {
+                blogSettingsForm.style.display = 'none';
+            }
+            
+            // ユーザー新規登録セクションを非表示
+            const userRegisterSection = document.querySelector('form#user-register-form').parentElement;
+            if (userRegisterSection) {
+                userRegisterSection.style.display = 'none';
+            }
         }
         
     } catch (error) {
         console.error('Error setting up user permissions:', error);
+        console.log('Continuing with default display...');
     }
 }
 
