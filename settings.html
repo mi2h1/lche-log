@@ -60,13 +60,34 @@
                 <button type="submit">設定を保存</button>
             </form>
             
+            <!-- 現在のユーザー設定 -->
+            <div style="margin-top: 3rem; padding-top: 2rem; border-top: 2px solid #eee;">
+                <h2>ユーザー設定</h2>
+                <form id="user-settings-form">
+                    <div class="form-group">
+                        <label for="display-name">表示名</label>
+                        <input type="text" id="display-name" placeholder="投稿者として表示される名前" required>
+                        <small>※ 記事や投稿に表示される名前です</small>
+                    </div>
+                    
+                    <button type="submit">表示名を更新</button>
+                </form>
+            </div>
+            
             <!-- ユーザー新規登録フォーム -->
             <div style="margin-top: 3rem; padding-top: 2rem; border-top: 2px solid #eee;">
                 <h2>ユーザー新規登録</h2>
                 <form id="user-register-form">
                     <div class="form-group">
                         <label for="new-username">ユーザー名</label>
-                        <input type="text" id="new-username" placeholder="ユーザー名を入力" required>
+                        <input type="text" id="new-username" placeholder="ログイン用ユーザー名" required>
+                        <small>※ ログイン時に使用します</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="new-display-name">表示名</label>
+                        <input type="text" id="new-display-name" placeholder="投稿者として表示される名前" required>
+                        <small>※ 記事や投稿に表示される名前です</small>
                     </div>
                     
                     <div class="form-group">

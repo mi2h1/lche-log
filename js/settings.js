@@ -35,10 +35,12 @@ async function initializeSettings() {
     
     // フォームの送信イベント
     document.getElementById('settings-form').addEventListener('submit', handleSubmit);
+    document.getElementById('user-settings-form').addEventListener('submit', handleUserSettings);
     document.getElementById('user-register-form').addEventListener('submit', handleUserRegister);
     
     // 既存の設定を読み込む
     await loadSettings();
+    await loadUserSettings();
 }
 
 async function loadSettings() {
@@ -188,17 +190,88 @@ function showMessage(message, type) {
     }, 5000);
 }
 
+// 現在のユーザー設定を読み込む
+async function loadUserSettings() {
+    try {
+        const session = localStorage.getItem('blog_session');
+        if (!session) return;
+        
+        const sessionData = JSON.parse(session);
+        const username = sessionData.username;
+        
+        const { data: user, error } = await supabaseClient
+            .from('users')
+            .select('username, display_name')
+            .eq('username', username)
+            .single();
+        
+        if (error) throw error;
+        
+        if (user) {
+            document.getElementById('display-name').value = user.display_name || user.username;
+        }
+        
+    } catch (error) {
+        console.error('Error loading user settings:', error);
+    }
+}
+
+// ユーザー設定の更新処理
+async function handleUserSettings(e) {
+    e.preventDefault();
+    
+    const displayName = document.getElementById('display-name').value.trim();
+    
+    if (!displayName) {
+        showMessage('表示名を入力してください', 'error');
+        return;
+    }
+    
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.textContent = '更新中...';
+    
+    try {
+        const session = localStorage.getItem('blog_session');
+        const sessionData = JSON.parse(session);
+        const username = sessionData.username;
+        
+        const { data, error } = await supabaseClient
+            .from('users')
+            .update({ display_name: displayName })
+            .eq('username', username)
+            .select();
+        
+        if (error) throw error;
+        
+        showMessage('表示名を更新しました！', 'success');
+        
+    } catch (error) {
+        console.error('Error updating user settings:', error);
+        showMessage('表示名の更新に失敗しました: ' + error.message, 'error');
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = '表示名を更新';
+    }
+}
+
 // ユーザー新規登録処理
 async function handleUserRegister(e) {
     e.preventDefault();
     
     const username = document.getElementById('new-username').value.trim();
+    const displayName = document.getElementById('new-display-name').value.trim();
     const password = document.getElementById('new-password').value;
     const passwordConfirm = document.getElementById('new-password-confirm').value;
     
     // バリデーション
     if (!username) {
         showMessage('ユーザー名を入力してください', 'error');
+        return;
+    }
+    
+    if (!displayName) {
+        showMessage('表示名を入力してください', 'error');
         return;
     }
     
@@ -225,6 +298,7 @@ async function handleUserRegister(e) {
             .from('users')
             .insert({
                 username: username,
+                display_name: displayName,
                 password_hash: passwordHash
             })
             .select();
