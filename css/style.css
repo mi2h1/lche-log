@@ -611,15 +611,42 @@ button:disabled {
 .vs-record {
     border-left: 4px solid #e74c3c;
     background-color: #fafafa;
+    overflow: hidden;
 }
 
-.vs-header {
+/* VSタイトル */
+.vs-title {
+    padding: 1rem 1.5rem 0.5rem;
+}
+
+.vs-title h2 {
+    margin: 0;
+    color: #333;
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+/* VS画像コンテナ */
+.vs-image-container {
+    margin: 1rem 0;
+    width: 100%;
+}
+
+.vs-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+/* VSフッター（カテゴリと日付） */
+.vs-footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 0 1.5rem;
     margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid #eee;
 }
 
 .vs-category {
@@ -634,54 +661,38 @@ button:disabled {
 .vs-date {
     color: #666;
     font-size: 0.9rem;
+    font-weight: 500;
 }
 
-.vs-content {
-    display: flex;
-    gap: 1rem;
-    align-items: flex-start;
-}
-
-.vs-image {
-    width: 200px;
-    height: auto;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    flex-shrink: 0;
-}
-
-.vs-info {
-    flex: 1;
-}
-
-.vs-info h3 {
-    margin: 0 0 0.5rem 0;
-    color: #333;
-    font-size: 1.2rem;
-}
-
+/* VS説明文 */
 .vs-description {
+    padding: 0 1.5rem 1rem;
     margin: 0;
     color: #666;
     font-style: italic;
+    border-top: 1px solid #eee;
+    padding-top: 1rem;
 }
 
 /* モバイル対応 */
 @media (max-width: 768px) {
-    .vs-content {
-        flex-direction: column;
+    .vs-title {
+        padding: 0.75rem 1rem 0.25rem;
     }
     
-    .vs-image {
-        width: 100%;
-        max-width: 300px;
-        align-self: center;
+    .vs-title h2 {
+        font-size: 1.2rem;
     }
     
-    .vs-header {
+    .vs-footer {
+        padding: 0 1rem;
         flex-direction: column;
         align-items: flex-start;
         gap: 0.5rem;
+    }
+    
+    .vs-description {
+        padding: 0.75rem 1rem;
     }
 }
 

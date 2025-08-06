@@ -62,20 +62,17 @@ async function loadPosts() {
                 // VS記録の表示
                 itemCard.className = 'post-card vs-record';
                 itemCard.innerHTML = `
-                    <div class="vs-header">
+                    <div class="vs-title">
+                        <h2>vs ${escapeHtml(item.title)}</h2>
+                    </div>
+                    <div class="vs-image-container">
+                        <img src="${item.image_url}" alt="${escapeHtml(item.title)}" class="vs-image">
+                    </div>
+                    <div class="vs-footer">
                         <span class="vs-category">${item.categories?.name || 'カテゴリなし'}</span>
                         <span class="vs-date">${formatDate(item.record_date)}</span>
                     </div>
-                    <div class="vs-content">
-                        <img src="${item.image_url}" alt="${escapeHtml(item.title)}" class="vs-image">
-                        <div class="vs-info">
-                            <h3>vs ${escapeHtml(item.title)}</h3>
-                            ${item.description ? `<p class="vs-description">${escapeHtml(item.description)}</p>` : ''}
-                        </div>
-                    </div>
-                    <div class="post-meta">
-                        ${formatDate(item.created_at)}
-                    </div>
+                    ${item.description ? `<div class="vs-description">${escapeHtml(item.description)}</div>` : ''}
                 `;
             } else {
                 // ブログ記事の表示
