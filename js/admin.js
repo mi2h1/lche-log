@@ -140,8 +140,7 @@ async function handleSubmit(e) {
                     title: title,
                     content: content,
                     status: status,
-                    user_id: userId,
-                    created_at: new Date().toISOString()
+                    user_id: userId
                 }
             ])
             .select();

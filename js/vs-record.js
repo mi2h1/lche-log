@@ -242,7 +242,8 @@ async function handleVsSubmit(e) {
             image_url: publicUrl,
             record_date: document.getElementById('vs-date').value,
             description: document.getElementById('vs-description').value,
-            user_id: userData.id
+            user_id: userData.id,
+            status: 'published'
         };
         
         const { data, error } = await supabaseClient
