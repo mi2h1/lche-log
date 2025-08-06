@@ -612,6 +612,7 @@ button:disabled {
     border-left: 4px solid #e74c3c;
     background-color: #fafafa;
     overflow: hidden;
+    padding: 0; /* デフォルトのpost-cardパディングを削除 */
 }
 
 /* VSタイトル */
