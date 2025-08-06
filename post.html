@@ -75,6 +75,13 @@
             white-space: nowrap;
         }
         
+        .post-user-cell {
+            color: #666;
+            font-size: 0.8rem;
+            font-family: monospace;
+            white-space: nowrap;
+        }
+        
         .post-actions {
             display: flex;
             gap: 0.5rem;
@@ -270,9 +277,10 @@
                 <table id="post-list-table" class="post-list-table" style="display: none;">
                     <thead>
                         <tr>
-                            <th style="width: 50%;">タイトル</th>
+                            <th style="width: 40%;">タイトル</th>
                             <th style="width: 15%;">ステータス</th>
-                            <th style="width: 20%;">投稿日</th>
+                            <th style="width: 15%;">ユーザーID</th>
+                            <th style="width: 15%;">投稿日</th>
                             <th style="width: 15%;">操作</th>
                         </tr>
                     </thead>

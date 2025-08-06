@@ -42,7 +42,7 @@ async function loadPosts() {
         const [postsResponse, vsRecordsResponse, usersResponse, categoriesResponse] = await Promise.all([
             supabaseClient
                 .from('posts')
-                .select('*')
+                .select('*, user_id')
                 .order('created_at', { ascending: false }),
             supabaseClient
                 .from('vs_records')
@@ -65,13 +65,6 @@ async function loadPosts() {
         const vsRecords = vsRecordsResponse.data || [];
         const users = usersResponse.data || [];
         const categories = categoriesResponse.data || [];
-        
-        // デバッグ情報
-        console.log('Posts loaded:', posts.length);
-        console.log('VS Records loaded:', vsRecords.length);
-        console.log('Users loaded:', users.length);
-        console.log('Categories loaded:', categories.length);
-        console.log('VS Records data:', vsRecords);
         
         // VS記録にユーザー情報とカテゴリ情報を結合
         const vsRecordsWithUserInfo = vsRecords.map(record => {
@@ -134,12 +127,16 @@ function displayPosts() {
         const typeText = post.type === 'vs' ? '[VS記録]' : '[記事]';
         const typeClass = post.type === 'vs' ? 'type-vs' : 'type-blog';
         
+        const userId = post.user_id || post.users?.id || '-';
+        const userIdShort = userId.length > 8 ? userId.substring(0, 8) + '...' : userId;
+        
         row.innerHTML = `
             <td class="post-title-cell" onclick="editPost('${post.id}', '${post.type}')">
                 <span class="post-type ${typeClass}">${typeText}</span>
                 ${escapeHtml(post.display_title || post.title)}
             </td>
             <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+            <td class="post-user-cell" title="${userId}">${userIdShort}</td>
             <td class="post-date-cell">${formatDate(post.created_at)}</td>
             <td>
                 <div class="post-actions">
