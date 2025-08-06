@@ -156,19 +156,52 @@ async function handleVsSubmit(e) {
         if (categorySelect.value) {
             categoryId = categorySelect.value;
         } else if (categoryInput.value) {
-            // 新規カテゴリを作成
-            const { data: newCategory, error: categoryError } = await supabaseClient
-                .from('categories')
-                .insert({ name: categoryInput.value })
-                .select()
-                .single();
+            // まず既存のカテゴリを確認
+            const existingCategory = categories.find(cat => cat.name.toLowerCase() === categoryInput.value.toLowerCase());
             
-            if (categoryError) throw categoryError;
-            categoryId = newCategory.id;
-            
-            // カテゴリリストを更新
-            categories.push(newCategory);
-            updateCategorySelect();
+            if (existingCategory) {
+                // 既存のカテゴリを使用
+                categoryId = existingCategory.id;
+            } else {
+                // 新規カテゴリを作成
+                try {
+                    const { data: newCategory, error: categoryError } = await supabaseClient
+                        .from('categories')
+                        .insert({ name: categoryInput.value })
+                        .select()
+                        .single();
+                    
+                    if (categoryError) {
+                        // 重複エラーの場合は既存のカテゴリを取得
+                        if (categoryError.code === '23505') {
+                            const { data: existingCat, error: fetchError } = await supabaseClient
+                                .from('categories')
+                                .select('*')
+                                .eq('name', categoryInput.value)
+                                .single();
+                            
+                            if (fetchError) throw fetchError;
+                            categoryId = existingCat.id;
+                            
+                            // ローカルリストにも追加
+                            if (!categories.find(cat => cat.id === existingCat.id)) {
+                                categories.push(existingCat);
+                                updateCategorySelect();
+                            }
+                        } else {
+                            throw categoryError;
+                        }
+                    } else {
+                        categoryId = newCategory.id;
+                        
+                        // カテゴリリストを更新
+                        categories.push(newCategory);
+                        updateCategorySelect();
+                    }
+                } catch (error) {
+                    throw new Error('カテゴリの作成に失敗しました: ' + error.message);
+                }
+            }
         } else {
             throw new Error('カテゴリを選択または入力してください');
         }
