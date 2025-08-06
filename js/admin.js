@@ -20,6 +20,11 @@ function initializeAdmin() {
     }
     
     initSupabase();
+    
+    // 投稿タイプ切り替え
+    setupPostTypeTabs();
+    
+    // ブログ投稿の初期化
     simplemde = new SimpleMDE({
         element: document.getElementById('content'),
         spellChecker: false,
@@ -52,6 +57,36 @@ function initializeAdmin() {
     });
     document.getElementById('draft-btn').addEventListener('click', (e) => {
         e.currentTarget.dataset.clicked = 'true';
+    });
+    
+    // VS記録機能の初期化
+    if (typeof initVsRecord === 'function') {
+        initVsRecord();
+    }
+}
+
+// 投稿タイプタブの設定
+function setupPostTypeTabs() {
+    const tabs = document.querySelectorAll('.post-type-tab');
+    const contents = document.querySelectorAll('.post-type-content');
+    
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const type = tab.dataset.type;
+            
+            // タブの切り替え
+            tabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            
+            // コンテンツの切り替え
+            contents.forEach(content => {
+                if (content.id === `${type}-content`) {
+                    content.classList.add('active');
+                } else {
+                    content.classList.remove('active');
+                }
+            });
+        });
     });
 }
 

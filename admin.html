@@ -21,22 +21,78 @@
     <main>
         <div class="admin-container">
             <h2>新規投稿</h2>
-            <form id="post-form">
-                <div class="form-group">
-                    <label for="title">タイトル</label>
-                    <input type="text" id="title" required>
+            
+            <!-- 投稿タイプ選択 -->
+            <div class="post-type-selector">
+                <div class="post-type-tab active" data-type="blog">
+                    📝 日記を書く
                 </div>
-                
-                <div class="form-group">
-                    <label for="content">内容（Markdown対応）</label>
-                    <textarea id="content"></textarea>
+                <div class="post-type-tab" data-type="vs">
+                    ⚔️ 対戦記録
                 </div>
-                
-                <div style="display: flex; gap: 1rem;">
-                    <button type="submit" id="publish-btn" data-status="published">公開する</button>
-                    <button type="submit" id="draft-btn" data-status="draft" style="background-color: #666;">下書き保存</button>
-                </div>
-            </form>
+            </div>
+            
+            <!-- ブログ投稿フォーム -->
+            <div class="post-type-content active" id="blog-content">
+                <form id="post-form">
+                    <div class="form-group">
+                        <label for="title">タイトル</label>
+                        <input type="text" id="title" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="content">内容（Markdown対応）</label>
+                        <textarea id="content"></textarea>
+                    </div>
+                    
+                    <div style="display: flex; gap: 1rem;">
+                        <button type="submit" id="publish-btn" data-status="published">公開する</button>
+                        <button type="submit" id="draft-btn" data-status="draft" style="background-color: #666;">下書き保存</button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- VS記録フォーム -->
+            <div class="post-type-content" id="vs-content">
+                <form id="vs-form" class="vs-form">
+                    <div class="form-group">
+                        <label>画像（必須）</label>
+                        <div class="image-upload-area" id="image-upload-area">
+                            <input type="file" id="vs-image" accept="image/*" style="display: none;" required>
+                            <p>📸 画像をドロップまたはクリックして選択</p>
+                            <img id="image-preview" class="image-preview" style="display: none;">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="vs-category">ゲーム（必須）</label>
+                        <div class="category-input-group">
+                            <select id="vs-category-select">
+                                <option value="">既存カテゴリから選択...</option>
+                            </select>
+                            <span>または</span>
+                            <input type="text" id="vs-category-input" placeholder="新規カテゴリ名を入力">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="vs-title">対戦相手（必須）</label>
+                        <input type="text" id="vs-title" placeholder="キャラ名など" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="vs-date">対戦日（必須）</label>
+                        <input type="date" id="vs-date" class="date-input" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="vs-description">一言（任意）</label>
+                        <textarea id="vs-description" rows="3" placeholder="対あり！SSR初ゲットなど"></textarea>
+                    </div>
+                    
+                    <button type="submit">対戦記録を投稿</button>
+                </form>
+            </div>
             
             <div id="message"></div>
         </div>
@@ -46,6 +102,7 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/config.js"></script>
+    <script src="js/vs-record.js"></script>
     <script src="js/admin.js"></script>
 </body>
 </html>
