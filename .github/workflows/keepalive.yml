@@ -37,13 +37,22 @@ jobs:
           
           async function keepAlive() {
             try {
+              // まず現在のping_countを取得
+              const { data: current, error: fetchError } = await supabase
+                .from('keepalive')
+                .select('ping_count')
+                .eq('id', 1)
+                .single();
+              
+              const currentCount = current ? (current.ping_count || 0) : 0;
+              
               // keepaliveテーブルの最新レコードを更新
               const { data, error } = await supabase
                 .from('keepalive')
                 .upsert({ 
                   id: 1,
                   last_ping: new Date().toISOString(),
-                  ping_count: supabase.sql\`ping_count + 1\`
+                  ping_count: currentCount + 1
                 })
                 .select();
               
