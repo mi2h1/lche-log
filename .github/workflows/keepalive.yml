@@ -1,0 +1,71 @@
+name: Keep Supabase Active
+
+on:
+  schedule:
+    # 毎日日本時間の朝9時に実行（UTC 0:00）
+    - cron: '0 0 * * *'
+  workflow_dispatch: # 手動実行も可能
+
+jobs:
+  keepalive:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Install Supabase client
+        run: npm install @supabase/supabase-js
+        
+      - name: Update Keepalive Table
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          node -e "
+          const { createClient } = require('@supabase/supabase-js');
+          
+          const supabase = createClient(
+            process.env.SUPABASE_URL,
+            process.env.SUPABASE_ANON_KEY
+          );
+          
+          async function keepAlive() {
+            try {
+              // keepaliveテーブルの最新レコードを更新
+              const { data, error } = await supabase
+                .from('keepalive')
+                .upsert({ 
+                  id: 1,
+                  last_ping: new Date().toISOString(),
+                  ping_count: supabase.sql\`ping_count + 1\`
+                })
+                .select();
+              
+              if (error) {
+                console.error('Error updating keepalive:', error);
+                process.exit(1);
+              }
+              
+              console.log('Successfully updated keepalive table:', data);
+              
+              // ついでに記事数も取得してデータベースが動いていることを確認
+              const { count } = await supabase
+                .from('posts')
+                .select('*', { count: 'exact', head: true });
+                
+              console.log('Total posts in database:', count);
+              
+            } catch (err) {
+              console.error('Unexpected error:', err);
+              process.exit(1);
+            }
+          }
+          
+          keepAlive();
+          "
