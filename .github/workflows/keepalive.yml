@@ -6,10 +6,14 @@ on:
     - cron: '0 0 * * *'
   workflow_dispatch: # 手動実行も可能
 
+# 自動コミット（リポジトリ活動の発生）に必要
+permissions:
+  contents: write
+
 jobs:
   keepalive:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -78,3 +82,24 @@ jobs:
           
           keepAlive();
           "
+
+      - name: Keep repository active (prevent 60-day auto-disable)
+        run: |
+          # スケジュール実行はリポジトリ活動として扱われず、コミットが60日
+          # 途絶えるとワークフローが自動停止される。それを防ぐため、最終コミット
+          # から50日以上経過している場合のみ、活動記録ファイルを更新して push する。
+          LAST_COMMIT_EPOCH=$(git log -1 --format=%ct)
+          NOW_EPOCH=$(date +%s)
+          DAYS_SINCE=$(( (NOW_EPOCH - LAST_COMMIT_EPOCH) / 86400 ))
+          echo "最終コミットからの経過日数: ${DAYS_SINCE}日"
+          if [ "$DAYS_SINCE" -ge 50 ]; then
+            echo "50日以上コミットがないため、活動記録を更新してコミットします。"
+            date -u +'%Y-%m-%dT%H:%M:%SZ' > docs/keepalive-activity.txt
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add docs/keepalive-activity.txt
+            git commit -m "chore: keepalive リポジトリ活動更新（60日自動停止の回避）"
+            git push
+          else
+            echo "最近コミットがあるため、コミットはスキップします。"
+          fi
