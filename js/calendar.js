@@ -99,7 +99,8 @@ function renderFilter() {
     let html = `<button type="button" class="cal-filter-btn${activeCategory === null ? ' active' : ''}" data-cat="">すべて</button>`;
     cats.forEach(c => {
         const on = activeCategory === c.id ? ' active' : '';
-        html += `<button type="button" class="cal-filter-btn${on}" data-cat="${c.id}">${escapeHtml(c.name)}</button>`;
+        const dot = `<span class="cal-filter-dot ${categoryClass(c.name)}"></span>`;
+        html += `<button type="button" class="cal-filter-btn${on}" data-cat="${c.id}">${dot}${escapeHtml(c.name)}</button>`;
     });
     wrap.innerHTML = html;
 
@@ -124,6 +125,18 @@ function changeMonth(delta) {
 
 function pad(n) { return String(n).padStart(2, '0'); }
 function dateKey(y, m, d) { return `${y}-${pad(m)}-${pad(d)}`; }
+
+// カテゴリ名から色分け用のクラス名を返す（部分一致で判定）
+function categoryClass(name) {
+    const n = name || '';
+    if (n.includes('スターレイル')) return 'game-hsr';
+    if (n.includes('エンドフィールド')) return 'game-endfield';
+    if (n.includes('ブルーアーカイブ')) return 'game-bluearchive';
+    if (n.includes('原神')) return 'game-genshin';
+    if (n.includes('NIKKE')) return 'game-nikke';
+    if (n.includes('ゼンレス')) return 'game-zzz';
+    return '';
+}
 
 function renderCalendar() {
     const grid = document.getElementById('calendar-grid');
@@ -161,7 +174,7 @@ function renderCalendar() {
 
         // 獲得したキャラ名を1件1行で表示（複数なら複数行）
         const names = records.map(r =>
-            `<span class="cal-name" title="${escapeHtml(r.title)}">${escapeHtml(r.title)}</span>`
+            `<span class="cal-name ${categoryClass(r.categoryName)}" title="${escapeHtml(r.categoryName)}｜${escapeHtml(r.title)}">${escapeHtml(r.title)}</span>`
         ).join('');
         const attr = count > 0 ? ` data-date="${key}" role="button" tabindex="0"` : '';
 
@@ -212,7 +225,7 @@ function showDayDetail(key) {
         html += `<a href="article.html?type=vs&id=${r.id}" class="day-detail-item">
             ${img}
             <div class="day-detail-info">
-                <span class="day-detail-cat">${escapeHtml(r.categoryName)}</span>
+                <span class="day-detail-cat ${categoryClass(r.categoryName)}">${escapeHtml(r.categoryName)}</span>
                 <span class="day-detail-name">${escapeHtml(r.title)}</span>
                 ${desc}
             </div>
