@@ -1,0 +1,152 @@
+/* ============================================================
+   カードデザインの上書き（お試し）
+
+   ★元に戻すには index.html からこのファイルの <link> を1行削除するだけ★
+   style.css には一切手を入れていないため、この1行で完全に元の見た目に戻る。
+
+   方針: シンプルさは維持したまま「影で浮かせる」から「線で区切る」へ。
+         紙面のような落ち着いたトーンに寄せる。
+   ============================================================ */
+
+/* --- 共通: カードの器 ------------------------------------- */
+.post-card {
+    /* 影を主役から外し、極細の輪郭線で形を見せる */
+    border: 1px solid #e6e4df;
+    box-shadow: 0 1px 2px rgba(28, 25, 23, 0.03);
+    /* 角丸を控えめにしてシャープな印象に */
+    border-radius: 3px;
+    /* 種類を示すアクセントラインを上端に引くための土台 */
+    overflow: hidden;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+/* 日記とVS記録を、上端の細いラインで一目で区別できるようにする */
+.post-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #2c3e50;
+    opacity: 0.65;
+}
+
+.post-card.vs-record::before {
+    background: #b4463c;
+}
+
+/* ホバーでわずかに浮かせる（カードが反応する感触を出す） */
+.post-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(28, 25, 23, 0.08);
+    border-color: #dcd9d2;
+}
+
+/* --- 見出し ----------------------------------------------- */
+.post-card h2,
+.vs-title h2 {
+    /* palt で日本語の約物を詰め、字間をわずかに締める */
+    font-feature-settings: "palt" 1;
+    letter-spacing: 0.01em;
+    font-weight: 700;
+    color: #1f2933;
+}
+
+/* --- 日記カード ------------------------------------------- */
+.post-content {
+    color: #4a5259;
+}
+
+.post-meta {
+    /* 本文と切り離さず、細い線で下端に添える */
+    border-top: 1px solid #efedea;
+    padding-top: 0.75rem;
+    left: 2rem;
+    right: 2rem;
+    bottom: 1.25rem;
+}
+
+.post-date {
+    /* 数字の幅を揃えて日付を安定させる */
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
+}
+
+/* --- VS記録カード ----------------------------------------- */
+.vs-record {
+    background-color: #fff;
+}
+
+.vs-title {
+    padding: 1.25rem 1.5rem 0.75rem;
+}
+
+.vs-image-container {
+    margin: 0;
+    /* 画像を線で締めて写真として見せる */
+    border-top: 1px solid #efedea;
+    border-bottom: 1px solid #efedea;
+}
+
+.vs-image {
+    transition: transform 0.5s ease;
+}
+
+.post-card:hover .vs-image {
+    transform: scale(1.03);
+}
+
+.vs-footer {
+    padding: 0.9rem 1.5rem;
+    margin-bottom: 0;
+}
+
+.vs-category {
+    /* ベタ塗りのピルをやめ、色と字間だけで見せる控えめなラベルに */
+    background-color: transparent;
+    color: #b4463c;
+    padding: 0;
+    border-radius: 0;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+.vs-date {
+    color: #8b8b86;
+    font-size: 0.78rem;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
+}
+
+.vs-description {
+    /* 日本語の合成斜体は読みにくいため italic を解除 */
+    font-style: normal;
+    color: #5c6169;
+    font-size: 0.9rem;
+    line-height: 1.75;
+    border-top: 1px solid #efedea;
+    padding: 1rem 1.5rem 1.25rem;
+}
+
+/* --- モバイル --------------------------------------------- */
+@media (max-width: 768px) {
+    .post-meta {
+        left: 1.5rem;
+        right: 1.5rem;
+    }
+
+    .vs-title {
+        padding: 1rem 1rem 0.6rem;
+    }
+
+    .vs-footer {
+        padding: 0.8rem 1rem;
+    }
+
+    .vs-description {
+        padding: 0.9rem 1rem 1rem;
+    }
+}
