@@ -100,11 +100,9 @@ function displayArticle(article) {
     
     if (article.type === 'vs') {
         // VS記録の表示
-        const vsTitle = `${displayName} vs ${escapeHtml(article.title)}`;
-        
         contentEl.innerHTML = `
             <div class="article-header">
-                <h1 class="article-title">${vsTitle}</h1>
+                <h1 class="article-title">${escapeHtml(article.title)}</h1>
                 <div class="article-meta">
                     <span>投稿者: ${escapeHtml(displayName)}</span>
                     <span>対戦日: ${formatDate(article.record_date)}</span>
@@ -151,7 +149,7 @@ function updateMetaTags(article) {
     let title, description, image;
     
     if (article.type === 'vs') {
-        title = `${displayName} vs ${article.title} - 開拓日誌`;
+        title = `${article.title} - 開拓日誌`;
         description = article.description || `${displayName}の${article.title}との対戦記録`;
         image = article.image_url;
     } else {
@@ -374,7 +372,7 @@ function checkLoginStatus() {
             logoutLink.onclick = (e) => {
                 e.preventDefault();
                 if (confirm('ログアウトしますか？')) {
-                    localStorage.removeItem('blog_session');
+                    clearSession();
                     window.location.reload();
                 }
             };
@@ -384,23 +382,6 @@ function checkLoginStatus() {
 }
 
 function checkLogin() {
-    const session = localStorage.getItem('blog_session');
-    if (!session) return false;
-    
-    try {
-        const sessionData = JSON.parse(session);
-        const loginTime = new Date(sessionData.loginTime);
-        const now = new Date();
-        const hoursDiff = (now - loginTime) / (1000 * 60 * 60);
-        
-        if (hoursDiff > 24) {
-            localStorage.removeItem('blog_session');
-            return false;
-        }
-        
-        return true;
-    } catch (error) {
-        localStorage.removeItem('blog_session');
-        return false;
-    }
+    // セッション判定は js/config.js の isSessionValid() に集約
+    return isSessionValid();
 }

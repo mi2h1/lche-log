@@ -75,7 +75,7 @@ async function loadPosts() {
                 type: 'vs',
                 users: user,
                 categories: category,
-                display_title: `${user?.display_name || user?.username || '投稿者'} vs ${record.title}`
+                display_title: record.title
             };
         });
         
@@ -512,23 +512,6 @@ function showVsEditFields(show) {
 }
 
 function checkLogin() {
-    const session = localStorage.getItem('blog_session');
-    if (!session) return false;
-    
-    try {
-        const sessionData = JSON.parse(session);
-        const loginTime = new Date(sessionData.loginTime);
-        const now = new Date();
-        const hoursDiff = (now - loginTime) / (1000 * 60 * 60);
-        
-        if (hoursDiff > 24) {
-            localStorage.removeItem('blog_session');
-            return false;
-        }
-        
-        return true;
-    } catch (error) {
-        localStorage.removeItem('blog_session');
-        return false;
-    }
+    // セッション判定は js/config.js の isSessionValid() に集約
+    return isSessionValid();
 }

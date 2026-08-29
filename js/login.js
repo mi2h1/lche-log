@@ -50,15 +50,11 @@ async function handleLogin(e) {
             throw new Error('ユーザーIDまたはパスワードが正しくありません');
         }
         
-        // ログイン成功
-        const sessionData = {
+        // ログイン成功（セッション情報を保存）
+        saveSession({
             username: users.username,
-            userId: users.id,
-            loginTime: new Date().toISOString()
-        };
-        
-        // セッション情報を保存
-        localStorage.setItem('blog_session', JSON.stringify(sessionData));
+            userId: users.id
+        });
         
         showMessage('ログインに成功しました', 'success');
         
@@ -97,32 +93,14 @@ function showMessage(message, type) {
     }, 5000);
 }
 
-// ログイン状態をチェックする関数（他のページでも使用）
+// ログイン状態をチェックする関数
+// セッション判定は js/config.js の isSessionValid() に集約
 function isLoggedIn() {
-    const session = localStorage.getItem('blog_session');
-    if (!session) return false;
-    
-    try {
-        const sessionData = JSON.parse(session);
-        // セッションの有効期限をチェック（24時間）
-        const loginTime = new Date(sessionData.loginTime);
-        const now = new Date();
-        const hoursDiff = (now - loginTime) / (1000 * 60 * 60);
-        
-        if (hoursDiff > 24) {
-            localStorage.removeItem('blog_session');
-            return false;
-        }
-        
-        return true;
-    } catch (error) {
-        localStorage.removeItem('blog_session');
-        return false;
-    }
+    return isSessionValid();
 }
 
 // ログアウト関数
 function logout() {
-    localStorage.removeItem('blog_session');
+    clearSession();
     window.location.href = 'index.html';
 }
