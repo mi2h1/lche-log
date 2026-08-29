@@ -56,11 +56,11 @@
 /* 見出しの上下余白を均等かつ控えめにする
    （上: カードのpadding-top / 下: h2のmargin-bottom） */
 .post-card {
-    padding-top: 1.25rem;
+    padding-top: 0.8rem;
 }
 
 .post-card h2 {
-    margin-bottom: 1.25rem;
+    margin-bottom: 0.8rem;
 }
 
 .post-content {
@@ -93,9 +93,9 @@
 }
 
 /* 見出しの上下余白を均等にする
-   （元の 上1rem / 下0.5rem の合計を保ったまま均等に振り分けた値） */
+   （上下均等・詰めた値） */
 .vs-title {
-    padding: 0.75rem 1.5rem;
+    padding: 0.45rem 1.5rem;
 }
 
 .vs-image-container {
@@ -150,11 +150,11 @@
 /* --- モバイル --------------------------------------------- */
 @media (max-width: 768px) {
     .post-card {
-        padding-top: 1rem;
+        padding-top: 0.7rem;
     }
 
     .post-card h2 {
-        margin-bottom: 1rem;
+        margin-bottom: 0.7rem;
     }
 
     .post-meta {
@@ -163,7 +163,7 @@
     }
 
     .vs-title {
-        padding: 0.6rem 1rem;
+        padding: 0.4rem 1rem;
     }
 
     .vs-footer {
