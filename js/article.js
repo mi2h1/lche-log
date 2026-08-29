@@ -53,7 +53,7 @@ async function loadArticle() {
                 .single();
             
             if (error || !data) {
-                throw new Error('VS記録が見つかりません。');
+                throw new Error('獲得記録が見つかりません。');
             }
             
             article = { ...data, type: 'vs' };
@@ -105,7 +105,7 @@ function displayArticle(article) {
                 <h1 class="article-title">${escapeHtml(article.title)}</h1>
                 <div class="article-meta">
                     <span>投稿者: ${escapeHtml(displayName)}</span>
-                    <span>対戦日: ${formatDate(article.record_date)}</span>
+                    <span>獲得日: ${formatDate(article.record_date)}</span>
                     <span>投稿日: ${formatDate(article.created_at)}</span>
                 </div>
             </div>
@@ -114,7 +114,7 @@ function displayArticle(article) {
                 
                 <div class="vs-info">
                     <div><strong>カテゴリ:</strong> ${article.categories?.name || 'カテゴリなし'}</div>
-                    <div><strong>対戦相手:</strong> ${escapeHtml(article.title)}</div>
+                    <div><strong>獲得キャラ:</strong> ${escapeHtml(article.title)}</div>
                 </div>
                 
                 ${article.description ? `<div style="margin-top: 2rem; text-align: left;">
@@ -150,7 +150,7 @@ function updateMetaTags(article) {
     
     if (article.type === 'vs') {
         title = `${article.title} - 開拓日誌`;
-        description = article.description || `${displayName}の${article.title}との対戦記録`;
+        description = article.description || `${displayName}の${article.title}との獲得記録`;
         image = article.image_url;
     } else {
         title = `${article.title} - 開拓日誌`;

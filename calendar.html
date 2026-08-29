@@ -3,24 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>開拓日誌</title>
-    
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="開拓日誌">
-    <meta name="twitter:description" content="でっけぇ開拓、で開拓">
-    <meta name="twitter:image" content="https://via.placeholder.com/1200x630">
-    
-    <!-- Open Graph -->
-    <meta property="og:title" content="開拓日誌">
-    <meta property="og:description" content="でっけぇ開拓、で開拓">
-    <meta property="og:image" content="https://via.placeholder.com/1200x630">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="">
-    
+    <title>獲得カレンダー</title>
+
     <link rel="stylesheet" href="css/style.css">
-    <!-- カードデザインの上書き。元に戻すにはこの1行を削除する -->
     <link rel="stylesheet" href="css/card-refresh.css">
+    <link rel="stylesheet" href="css/calendar.css">
 </head>
 <body>
     <!-- モバイルヘッダー -->
@@ -33,10 +20,10 @@
             </div>
         </div>
     </header>
-    
+
     <!-- オーバーレイ -->
     <div class="sidebar-overlay" id="sidebar-overlay"></div>
-    
+
     <div class="layout-container">
         <aside class="sidebar" id="sidebar">
             <button class="sidebar-close" id="sidebar-close">×</button>
@@ -57,23 +44,33 @@
                 </nav>
             </div>
         </aside>
-        
+
         <main class="main-content">
-            <div id="posts-container"></div>
-            <div id="loading">読み込み中...</div>
-            <div id="load-error" style="display: none;">
-                <p>投稿の読み込みに失敗しました。</p>
-                <button type="button" id="retry-button">再読み込み</button>
+            <div class="calendar-wrap">
+                <h1 class="calendar-page-title">獲得カレンダー</h1>
+
+                <!-- 月ナビゲーション -->
+                <div class="calendar-nav">
+                    <button type="button" id="cal-prev" class="cal-nav-btn" aria-label="前の月">‹</button>
+                    <span id="cal-current" class="cal-current"></span>
+                    <button type="button" id="cal-next" class="cal-nav-btn" aria-label="次の月">›</button>
+                    <button type="button" id="cal-today" class="cal-today-btn">今月</button>
+                </div>
+
+                <div id="cal-loading" class="cal-loading">読み込み中...</div>
+                <div id="cal-error" class="cal-error" style="display:none;">データの読み込みに失敗しました。</div>
+
+                <!-- カレンダー本体 -->
+                <div id="calendar-grid" class="calendar-grid" style="display:none;"></div>
+
+                <!-- 選択した日の詳細 -->
+                <div id="day-detail" class="day-detail" style="display:none;"></div>
             </div>
-            <div id="list-end" style="display: none;">これ以上投稿はありません</div>
-            <!-- 無限スクロールの読み込みトリガー -->
-            <div id="scroll-sentinel"></div>
         </main>
     </div>
-    
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="js/config.js"></script>
-    <script src="js/blog.js"></script>
+    <script src="js/calendar.js"></script>
 </body>
 </html>

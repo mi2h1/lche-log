@@ -106,7 +106,7 @@ async function loadPosts() {
         }
         
         allPosts = allItems;
-        document.getElementById('post-count').textContent = `全${allItems.length}件（記事${posts.length}件、VS記録${vsRecords.length}件）`;
+        document.getElementById('post-count').textContent = `全${allItems.length}件（記事${posts.length}件、獲得記録${vsRecords.length}件）`;
         
         displayPosts();
         
@@ -135,7 +135,7 @@ function displayPosts() {
         const row = document.createElement('tr');
         const statusText = getStatusText(post.status || 'published');
         const statusClass = `status-${post.status || 'published'}`;
-        const typeText = post.type === 'vs' ? '[VS記録]' : '[記事]';
+        const typeText = post.type === 'vs' ? '[獲得]' : '[記事]';
         const typeClass = post.type === 'vs' ? 'type-vs' : 'type-blog';
         
         const userDisplayName = post.users?.display_name || post.users?.username || '不明';
@@ -413,7 +413,7 @@ async function handleUpdate(e) {
             if (error) throw error;
         }
         
-        showMessage(`${postType === 'vs' ? 'VS記録' : '記事'}を更新しました！`, 'success');
+        showMessage(`${postType === 'vs' ? '獲得記録' : '記事'}を更新しました！`, 'success');
         
         // リストを更新
         await loadPosts();

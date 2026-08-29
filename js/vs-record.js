@@ -257,7 +257,7 @@ async function handleVsSubmit(e) {
         
         console.log('Inserted VS record result:', data); // デバッグ用
         
-        showMessage('対戦記録を投稿しました！', 'success');
+        showMessage('獲得記録を投稿しました！', 'success');
         resetVsForm();
         
     } catch (error) {
@@ -265,7 +265,7 @@ async function handleVsSubmit(e) {
         showMessage('投稿に失敗しました: ' + error.message, 'error');
     } finally {
         submitBtn.disabled = false;
-        submitBtn.textContent = '対戦記録を投稿';
+        submitBtn.textContent = '獲得記録を投稿';
     }
 }
 
