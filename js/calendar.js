@@ -1,9 +1,11 @@
 // 獲得カレンダー機能
 
 let allRecords = [];          // 取得した獲得記録（published）
-let recordsByDate = {};       // 'YYYY-MM-DD' -> [record, ...]
+let allCategories = [];       // カテゴリ（ゲーム）一覧
+let recordsByDate = {};       // 'YYYY-MM-DD' -> [record, ...]（フィルタ適用後）
 let viewYear, viewMonth;      // 現在表示中の年・月（monthは1〜12）
 let selectedDate = null;      // 選択中の日付キー
+let activeCategory = null;    // 絞り込み中のカテゴリID（null = 全ゲーム）
 
 const WEEKDAYS = ['日', '月', '火', '水', '木', '金', '土'];
 
@@ -57,27 +59,59 @@ async function loadRecords() {
         if (recordsRes.error) throw recordsRes.error;
         if (categoriesRes.error) throw categoriesRes.error;
 
-        const categories = categoriesRes.data || [];
+        allCategories = categoriesRes.data || [];
         allRecords = (recordsRes.data || []).map(r => ({
             ...r,
-            categoryName: (categories.find(c => c.id === r.category_id) || {}).name || 'その他'
+            categoryName: (allCategories.find(c => c.id === r.category_id) || {}).name || 'その他'
         }));
 
-        // record_date（'YYYY-MM-DD'）ごとにまとめる。日付がないものは除外
-        recordsByDate = {};
-        allRecords.forEach(r => {
-            if (!r.record_date) return;
-            const key = r.record_date.slice(0, 10);
-            (recordsByDate[key] = recordsByDate[key] || []).push(r);
-        });
-
         loadingEl.style.display = 'none';
+        renderFilter();
+        rebuildIndex();
         renderCalendar();
     } catch (error) {
         console.error('獲得記録の読み込みに失敗:', error);
         loadingEl.style.display = 'none';
         errorEl.style.display = 'block';
     }
+}
+
+// activeCategory に応じて record_date ごとにまとめ直す（日付がないものは除外）
+function rebuildIndex() {
+    recordsByDate = {};
+    allRecords.forEach(r => {
+        if (!r.record_date) return;
+        if (activeCategory && r.category_id !== activeCategory) return;
+        const key = r.record_date.slice(0, 10);
+        (recordsByDate[key] = recordsByDate[key] || []).push(r);
+    });
+}
+
+// ゲーム（カテゴリ）フィルターのボタンを描画する
+function renderFilter() {
+    const wrap = document.getElementById('cal-filter');
+    if (!wrap) return;
+
+    // 実際に獲得記録が存在するカテゴリのみボタン化
+    const usedIds = new Set(allRecords.map(r => r.category_id));
+    const cats = allCategories.filter(c => usedIds.has(c.id));
+
+    let html = `<button type="button" class="cal-filter-btn${activeCategory === null ? ' active' : ''}" data-cat="">すべて</button>`;
+    cats.forEach(c => {
+        const on = activeCategory === c.id ? ' active' : '';
+        html += `<button type="button" class="cal-filter-btn${on}" data-cat="${c.id}">${escapeHtml(c.name)}</button>`;
+    });
+    wrap.innerHTML = html;
+
+    wrap.querySelectorAll('.cal-filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            activeCategory = btn.dataset.cat || null;
+            selectedDate = null;
+            renderFilter();
+            rebuildIndex();
+            renderCalendar();
+        });
+    });
 }
 
 function changeMonth(delta) {
@@ -125,14 +159,15 @@ function renderCalendar() {
         if (isToday) cls += ' is-today';
         if (selectedDate === key) cls += ' is-selected';
 
-        const badge = count > 0
-            ? `<span class="cal-badge">${count}</span>`
-            : '';
+        // 獲得したキャラ名を1件1行で表示（複数なら複数行）
+        const names = records.map(r =>
+            `<span class="cal-name" title="${escapeHtml(r.title)}">${escapeHtml(r.title)}</span>`
+        ).join('');
         const attr = count > 0 ? ` data-date="${key}" role="button" tabindex="0"` : '';
 
         html += `<div class="${cls}"${attr}>
             <span class="cal-day-num">${d}</span>
-            ${badge}
+            ${names ? `<div class="cal-names">${names}</div>` : ''}
         </div>`;
     }
 

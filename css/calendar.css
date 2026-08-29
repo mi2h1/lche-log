@@ -6,7 +6,7 @@
 
 .calendar-wrap {
     width: 100%;
-    max-width: 900px;
+    max-width: 1120px;
     padding: 0 2rem;
 }
 
@@ -42,8 +42,13 @@
     border: 1px solid #e0e0e0;
     background: #fff;
     border-radius: 4px;
-    font-size: 1.2rem;
+    font-size: 1.3rem;
+    /* グリフが下にずれるのを防ぐため flex で中央寄せする */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     line-height: 1;
+    padding: 0;
     color: #555;
     cursor: pointer;
     transition: background 0.2s ease, border-color 0.2s ease;
@@ -75,6 +80,35 @@
 }
 .cal-error { color: #b00; }
 
+/* --- ゲームフィルター --- */
+.cal-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+}
+
+.cal-filter-btn {
+    padding: 0.35rem 0.85rem;
+    border: 1px solid #e0e0e0;
+    background: #fff;
+    border-radius: 999px;
+    font-size: 0.82rem;
+    color: #555;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.cal-filter-btn:hover {
+    background: #f5f5f5;
+    border-color: #cfcfcf;
+}
+.cal-filter-btn.active {
+    background: #7c3859;
+    border-color: #7c3859;
+    color: #fff;
+    font-weight: 700;
+}
+
 /* --- カレンダーグリッド --- */
 .calendar-grid {
     display: grid;
@@ -99,7 +133,7 @@
 
 .cal-cell {
     background: #fff;
-    min-height: 4.5rem;
+    min-height: 5.5rem;
     padding: 0.35rem 0.4rem;
     position: relative;
     display: flex;
@@ -125,21 +159,27 @@
 }
 .cal-cell.has-records:hover { background: #faf4f7; }
 
-.cal-badge {
-    margin-top: auto;
-    align-self: flex-start;
-    min-width: 1.5rem;
-    height: 1.5rem;
-    padding: 0 0.4rem;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: #7c3859;
-    color: #fff;
-    font-size: 0.8rem;
-    font-weight: 700;
-    border-radius: 999px;
-    font-variant-numeric: tabular-nums;
+/* 獲得したキャラ名（1件1行、複数なら複数行） */
+.cal-names {
+    margin-top: 0.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.cal-name {
+    font-size: 0.72rem;
+    line-height: 1.35;
+    color: #1a1a1a;
+    background: #f3e9ef;
+    border-left: 3px solid #7c3859;
+    padding: 1px 4px;
+    border-radius: 2px;
+    /* 長い名前は省略して1行に収める */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-feature-settings: "palt" 1;
 }
 
 /* 今日 */
@@ -228,14 +268,14 @@
     .calendar-wrap { padding: 0 1rem; }
 
     .cal-cell {
-        min-height: 3.4rem;
-        padding: 0.25rem;
+        min-height: 4rem;
+        padding: 0.2rem;
     }
     .cal-day-num { font-size: 0.72rem; }
-    .cal-badge {
-        min-width: 1.2rem;
-        height: 1.2rem;
-        font-size: 0.7rem;
+    .cal-name {
+        font-size: 0.6rem;
+        padding: 1px 2px;
+        border-left-width: 2px;
     }
     .day-detail-list {
         grid-template-columns: 1fr 1fr;
