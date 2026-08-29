@@ -8,7 +8,7 @@
    - シンプルさは維持したまま「影で浮かせる」から「線で区切る」へ
    - 配色はグレースケール（色相を持たない中間色のみ）
    - アクセントカラー #7c3859 はカテゴリラベル1箇所のみに使用
-   - 見出しの上下余白を均等にする
+   - 見出しの上下余白は均等かつ控えめに
    ============================================================ */
 
 :root {
@@ -30,24 +30,9 @@
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
     /* 角丸を控えめにしてシャープな印象に */
     border-radius: 3px;
-    /* 種類を示すラインを上端に引くための土台 */
+    /* ホバー時の画像拡大をカード内に収める */
     overflow: hidden;
     transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-}
-
-/* 日記とVS記録を、上端のラインの濃さ（色相ではなく明度）で区別する */
-.post-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: #333333;
-}
-
-.post-card.vs-record::before {
-    background: #bdbdbd;
 }
 
 /* ホバーでわずかに浮かせる（カードが反応する感触を出す） */
@@ -68,13 +53,14 @@
 }
 
 /* --- 日記カード ------------------------------------------- */
-/* 見出しの上下余白を均等にする（上: カードのpadding-top / 下: h2のmargin-bottom） */
+/* 見出しの上下余白を均等かつ控えめにする
+   （上: カードのpadding-top / 下: h2のmargin-bottom） */
 .post-card {
-    padding-top: 1.5rem;
+    padding-top: 1.25rem;
 }
 
 .post-card h2 {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.25rem;
 }
 
 .post-content {
@@ -106,9 +92,10 @@
     background-color: #ffffff;
 }
 
-/* 見出しの上下余白を均等にする */
+/* 見出しの上下余白を均等にする
+   （元の 上1rem / 下0.5rem の合計を保ったまま均等に振り分けた値） */
 .vs-title {
-    padding: 1.1rem 1.5rem;
+    padding: 0.75rem 1.5rem;
 }
 
 .vs-image-container {
@@ -163,11 +150,11 @@
 /* --- モバイル --------------------------------------------- */
 @media (max-width: 768px) {
     .post-card {
-        padding-top: 1.25rem;
+        padding-top: 1rem;
     }
 
     .post-card h2 {
-        margin-bottom: 1.25rem;
+        margin-bottom: 1rem;
     }
 
     .post-meta {
@@ -176,7 +163,7 @@
     }
 
     .vs-title {
-        padding: 0.9rem 1rem;
+        padding: 0.6rem 1rem;
     }
 
     .vs-footer {
