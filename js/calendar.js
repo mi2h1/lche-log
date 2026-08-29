@@ -235,7 +235,6 @@ function showDayDetail(key) {
 
     detail.innerHTML = html;
     detail.style.display = 'block';
-    detail.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 function escapeHtml(text) {

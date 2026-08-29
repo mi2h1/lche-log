@@ -204,12 +204,13 @@
    ゲームごとの色（--game-accent: 縦ライン/ドット, --game-bg: 淡い背景）
    文字は黒のままにして読みやすさを保つ
    ============================================================ */
-.game-hsr         { --game-accent: #24408e; --game-bg: #e7ecf7; } /* スターレイル: 深青 */
-.game-endfield    { --game-accent: #e4f000; --game-bg: #f8ffbe; } /* エンドフィールド: 蛍光イエロー（緑寄り） */
-.game-bluearchive { --game-accent: #2fa6dc; --game-bg: #e2f3fb; } /* ブルーアーカイブ: 水色 */
-.game-genshin     { --game-accent: #c9a84e; --game-bg: #f6efd5; } /* 原神: クリーム */
-.game-nikke       { --game-accent: #222222; --game-bg: #e6e6e6; } /* NIKKE: 黒 */
-.game-zzz         { --game-accent: #8a8a8a; --game-bg: #ededed; } /* ゼンレスゾーンゼロ: グレー */
+/* --game-fg はタグ（背景=accent）に載せる文字色。背景に応じて視認しやすい色 */
+.game-hsr         { --game-accent: #24408e; --game-bg: #e7ecf7; --game-fg: #ffffff; } /* スターレイル: 深青 */
+.game-endfield    { --game-accent: #e4f000; --game-bg: #f8ffbe; --game-fg: #1a1a1a; } /* エンドフィールド: 蛍光イエロー（緑寄り） */
+.game-bluearchive { --game-accent: #2fa6dc; --game-bg: #e2f3fb; --game-fg: #08344a; } /* ブルーアーカイブ: 水色 */
+.game-genshin     { --game-accent: #c9a84e; --game-bg: #f6efd5; --game-fg: #1a1a1a; } /* 原神: クリーム */
+.game-nikke       { --game-accent: #222222; --game-bg: #e6e6e6; --game-fg: #ffffff; } /* NIKKE: 黒 */
+.game-zzz         { --game-accent: #8a8a8a; --game-bg: #ededed; --game-fg: #ffffff; } /* ゼンレスゾーンゼロ: グレー */
 
 /* 今日 */
 .cal-cell.is-today {
@@ -272,10 +273,14 @@
 }
 
 .day-detail-cat {
+    align-self: flex-start;
+    padding: 0.15rem 0.7rem;
+    border-radius: 999px;
     font-size: 0.72rem;
     font-weight: 700;
-    letter-spacing: 0.06em;
-    color: var(--game-accent, #7c3859);
+    letter-spacing: 0.04em;
+    background: var(--game-accent, #7c3859);
+    color: var(--game-fg, #ffffff);
 }
 
 .day-detail-name {
