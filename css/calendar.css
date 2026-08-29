@@ -200,7 +200,7 @@
    文字は黒のままにして読みやすさを保つ
    ============================================================ */
 .game-hsr         { --game-accent: #24408e; --game-bg: #e7ecf7; } /* スターレイル: 深青 */
-.game-endfield    { --game-accent: #d9c400; --game-bg: #faf6c4; } /* エンドフィールド: 緑寄りの黄（明るめ） */
+.game-endfield    { --game-accent: #e4f000; --game-bg: #f8ffbe; } /* エンドフィールド: 蛍光イエロー（緑寄り） */
 .game-bluearchive { --game-accent: #2fa6dc; --game-bg: #e2f3fb; } /* ブルーアーカイブ: 水色 */
 .game-genshin     { --game-accent: #c9a84e; --game-bg: #f6efd5; } /* 原神: クリーム */
 .game-nikke       { --game-accent: #222222; --game-bg: #e6e6e6; } /* NIKKE: 黒 */
