@@ -1,88 +1,66 @@
 # 静的ブログシステム (GitHub Pages + Supabase)
 
-このプロジェクトは、GitHub PagesとSupabaseを使用した静的ブログシステムです。
+このプロジェクトは、GitHub Pages と Supabase を使用した静的ブログシステムです。
+日記投稿と VS記録（対戦記録）を1つのタイムラインに統合して表示します。
 
 ## セットアップ手順
 
-### 1. Supabaseの設定
+### 1. Supabase の設定
 
-1. [Supabase](https://supabase.com)でプロジェクトを作成
-2. 以下のSQLを実行してpostsテーブルを作成：
+1. [Supabase](https://supabase.com) でプロジェクトを作成
+2. SQL Editor で以下を実行
+   - `database/setup.sql` … posts / users / blog_settings / categories / vs_records
+   - `database/keepalive-setup.sql` … 自動スリープ防止用の keepalive テーブル
+3. Storage で**公開バケット `vs-images`** を作成（VS記録の画像アップロード先）
+4. 管理者ユーザーを登録（手順は `database/README.md` を参照）
+5. プロジェクトの URL と anon key を取得
 
-```sql
--- 記事テーブル
-CREATE TABLE posts (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  title TEXT NOT NULL,
-  content TEXT NOT NULL,
-  status TEXT DEFAULT 'published' CHECK (status IN ('draft', 'published', 'private')),
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
+スキーマの詳細・パスワードハッシュの生成方法は `database/README.md` にまとめています。
 
--- 既存のpostsテーブルにstatusカラムを追加する場合
--- ALTER TABLE posts ADD COLUMN status TEXT DEFAULT 'published' CHECK (status IN ('draft', 'published', 'private'));
+### 2. GitHub Secrets の設定
 
--- ブログ設定テーブル
-CREATE TABLE blog_settings (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  blog_title TEXT,
-  profile_bio TEXT,
-  profile_image TEXT,
-  color_primary TEXT DEFAULT '#2c3e50',
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
+リポジトリの Settings → Secrets and variables → Actions で以下を追加：
 
--- ユーザーテーブル（認証用）
-CREATE TABLE users (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  username TEXT UNIQUE NOT NULL,
-  password_hash TEXT NOT NULL,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
+- `SUPABASE_URL`: Supabase プロジェクトの URL
+- `SUPABASE_ANON_KEY`: Supabase の anon key
 
--- 初期ユーザーの登録例
--- パスワードのハッシュ化にはオンラインツール（https://emn178.github.io/online-tools/sha256.html）を使用
--- または、ブラウザのコンソールで以下を実行：
--- await crypto.subtle.digest('SHA-256', new TextEncoder().encode('your_password')).then(hash => Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join(''))
--- 
--- 例: INSERT INTO users (username, password_hash) VALUES ('admin', 'your_hash_here');
-```
+デプロイ時に `.github/workflows/deploy.yml` がこの2つを `js/config-template.js` に
+差し込んで `js/env-config.js` を生成し、各 HTML に読み込み用の `<script>` を挿入します。
+`js/env-config.js` は `.gitignore` 済みで、認証情報をリポジトリに含めません。
 
-3. プロジェクトのURLとanon keyを取得
+ローカルで動かす場合のみ、同じ内容の `js/env-config.js` を手元に作成してください。
 
-### 2. GitHub Secretsの設定
+### 3. GitHub Pages の有効化
 
-リポジトリの Settings → Secrets and variables → Actions で以下のSecretsを追加：
-
-- `SUPABASE_URL`: SupabaseプロジェクトのURL
-- `SUPABASE_ANON_KEY`: Supabaseのanon key
-
-※ ローカル開発時は`js/config.js`を直接編集することも可能です。
-
-### 3. GitHub Pagesの有効化
-
-1. このリポジトリをGitHubにプッシュ
+1. このリポジトリを GitHub にプッシュ
 2. Settings → Pages → Source を "GitHub Actions" に設定
-3. Actions workflowが自動的にデプロイを開始します
+3. `main` への push で自動デプロイされます
 
 ## 使い方
 
-- **ホームページ** (`index.html`): ブログ記事を全文表示（サイドバー付き）
-- **ログイン** (`login.html`): 管理者ログイン（URLは非公開、直接アクセスのみ）
-- **新規投稿** (`admin.html`): 新しい記事を投稿（Markdownエディタ付き）※要ログイン
-- **ブログ設定** (`settings.html`): ブログタイトル、プロフィール、アイコンを編集 ※要ログイン
+| ページ | 内容 |
+|---|---|
+| `index.html` | トップ。日記とVS記録のカード一覧 |
+| `article.html?id=...` | 個別記事ページ |
+| `login.html` | 管理者ログイン（URLは非公開、直接アクセスのみ） |
+| `admin.html` | 新規投稿（日記 / VS記録をタブで切替）※要ログイン |
+| `post.html` | 投稿の一覧・編集・削除 ※要ログイン |
+| `settings.html` | ブログ設定・表示名・パスワード・ユーザー追加 ※要ログイン |
 
 ## 機能
 
-- Markdown形式での記事作成
-- SimpleMDEエディタによる快適な執筆体験
-- 自動保存機能
+- Markdown 形式での記事作成（SimpleMDE エディタ・自動保存）
+- 記事ステータス管理（下書き / 公開 / 非公開）
+- VS記録の投稿（画像アップロード・カテゴリ管理）
+- ブログタイトル・プロフィール・プライマリカラーのカスタマイズ
 - レスポンシブデザイン
 - 完全な静的サイト（サーバー不要）
-- ログイン認証機能（管理画面へのアクセス制限）
+- ログイン認証（管理画面へのアクセス制限）
+- Supabase の自動スリープ防止（GitHub Actions で毎日 keepalive を更新）
 
 ## 注意事項
 
-- ログインページ（`login.html`）へのリンクは意図的に設置していません。URLを知っている管理者のみアクセス可能です
-- Supabaseの無料プランには制限があるため、アクセス数が多い場合は有料プランを検討
+- ログインページ（`login.html`）へのリンクは意図的に設置していません。URL を知っている管理者のみアクセス可能です
+- 認証は anon key を使ったクライアント側の照合です。セキュリティ上の既知課題は `CLAUDE.md` / `database/setup.sql` を参照してください
+- Supabase の無料プランには制限があるため、アクセス数が多い場合は有料プランを検討してください
+- 保守の経緯は `docs/progress.md` に記録しています

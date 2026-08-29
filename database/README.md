@@ -1,49 +1,47 @@
 # データベースセットアップガイド
 
-このディレクトリには、lche-logのデータベースセットアップに必要なSQLファイルが含まれています。
+このディレクトリには、lche-log のデータベースセットアップに必要な SQL ファイルが含まれています。
 
 ## ファイル一覧
 
-### 1. setup.sql
-新規インストール用の完全なデータベーススキーマです。以下のテーブルを作成します：
-- `posts` - ブログ記事
-- `blog_settings` - ブログ設定
-- `users` - 認証用ユーザー
+### setup.sql
+新規インストール用の完全なデータベーススキーマです。以下を作成します。
 
-### 2. migration-v2.sql
-既存のデータベースにステータス機能を追加するためのマイグレーションスクリプトです。
-- `posts`テーブルに`status`カラムを追加
-- 既存記事を全て「公開中」に設定
+| テーブル | 用途 |
+|---|---|
+| `users` | 認証用ユーザー（username / display_name / password_hash） |
+| `posts` | 日記投稿（Markdown、status、user_id） |
+| `blog_settings` | ブログ設定（タイトル・プロフィール・カラー） |
+| `categories` | VS記録用カテゴリ |
+| `vs_records` | 対戦記録（画像URL・カテゴリ・記録日） |
 
-### 3. sample-data.sql
-開発・テスト用のサンプルデータです。
-- テストユーザー（username: testuser, password: test1234）
-- サンプル記事（公開中、下書き、非公開）
-- ブログ設定のサンプル
+あわせて RLS ポリシーとインデックスも作成します。
+既存環境にカラムだけ追加したい場合は、末尾の「9. 既存環境向けの追加SQL」の
+`ALTER TABLE` をコメントアウトを外して実行してください。
+
+### keepalive-setup.sql
+Supabase の自動スリープ防止用 `keepalive` テーブルを作成します。
+`.github/workflows/keepalive.yml` が毎日このテーブルを更新します。
+**`DROP TABLE IF EXISTS keepalive;` を含むため、再実行すると ping_count がリセットされます。**
 
 ## セットアップ手順
 
 ### 新規インストール
-1. Supabaseのダッシュボードにログイン
-2. SQL Editorを開く
-3. `setup.sql`の内容を実行
-4. 管理者ユーザーを作成（パスワードハッシュの生成方法は`setup.sql`内のコメント参照）
+1. Supabase のダッシュボードにログイン
+2. SQL Editor を開く
+3. `setup.sql` を実行
+4. `keepalive-setup.sql` を実行
+5. Storage で公開バケット `vs-images` を作成（VS記録の画像アップロードに必要）
+6. 管理者ユーザーを作成（ハッシュの生成方法は `setup.sql` 内のコメント参照）
 
-### 既存環境のアップグレード
-1. Supabaseのダッシュボードにログイン
-2. SQL Editorを開く
-3. `migration-v2.sql`の内容を実行
-
-### 開発環境のセットアップ
-1. 上記の新規インストール手順を実行
-2. `sample-data.sql`を実行してテストデータを投入
+### 既存環境の更新
+1. `setup.sql` の「9. 既存環境向けの追加SQL」から必要な `ALTER TABLE` のみ実行
 
 ## パスワードハッシュの生成方法
 
 ブラウザのコンソールで以下を実行：
 
 ```javascript
-// パスワードをSHA-256でハッシュ化
 const password = 'your_password_here';
 const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(password))
   .then(hash => Array.from(new Uint8Array(hash))
@@ -52,8 +50,12 @@ const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pass
 console.log(hash);
 ```
 
+なお、管理者ユーザーの追加・表示名変更・パスワード変更は `settings.html` の画面からも行えます。
+
 ## 注意事項
 
 - 本番環境では必ず強力なパスワードを使用してください
-- RLS（Row Level Security）の設定は環境に応じて調整してください
+- `users` テーブルは RLS 未設定です。ログイン処理が anon key で直接 SELECT しているため、
+  設定次第では `password_hash` が公開読み取り可能になります（`setup.sql` の既知課題を参照）
+- 書き込み系の RLS ポリシーは `USING (true)` で全許可です。認証はアプリケーション側でのみ制御しています
 - 定期的なバックアップを推奨します
