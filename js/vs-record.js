@@ -73,11 +73,32 @@ function setupEventListeners() {
     uploadArea.addEventListener('drop', (e) => {
         e.preventDefault();
         uploadArea.classList.remove('hover');
-        
+
         const files = e.dataTransfer.files;
-        if (files.length > 0 && files[0].type.startsWith('image/')) {
-            handleImageSelect(files[0]);
+        if (files.length === 0) return;
+
+        if (!files[0].type.startsWith('image/')) {
+            showMessage('画像ファイルを選択してください', 'error');
+            return;
         }
+
+        // ドロップしたファイルを実際の input にも渡す
+        // （input が required のため、これをしないと送信時の必須チェックで弾かれる）
+        try {
+            imageInput.files = files;
+        } catch (err) {
+            // 一部ブラウザで input.files への代入が不可の場合も selectedImage で送信できる
+            console.warn('input.files への代入に失敗しました:', err);
+        }
+
+        handleImageSelect(files[0]);
+    });
+
+    // エリア外にドロップした画像でブラウザがページ遷移（画像を開く）しないようにする
+    ['dragover', 'drop'].forEach(evt => {
+        document.addEventListener(evt, (e) => {
+            if (!uploadArea.contains(e.target)) e.preventDefault();
+        });
     });
     
     imageInput.addEventListener('change', (e) => {
